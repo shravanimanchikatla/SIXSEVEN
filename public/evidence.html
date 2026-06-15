@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Evidence Vault - SafeSphere</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "surface-container-highest": "#d7e7d3", "surface": "#edfee9", "outline": "#737971",
+            "primary": "#4a654b", "outline-variant": "#c3c8bf", "on-tertiary-fixed": "#042017",
+            "surface-container-high": "#dcedd9", "on-surface-variant": "#434841",
+            "surface-container-lowest": "#ffffff", "on-primary-container": "#17311b",
+            "secondary": "#4b645a", "on-secondary": "#ffffff", "on-surface": "#111f12",
+            "surface-tint": "#4a654b", "primary-container": "#7d9a7d", "surface-variant": "#d7e7d3",
+            "secondary-container": "#cde9dd", "on-primary": "#ffffff", "surface-container": "#e2f3de",
+            "tertiary": "#496459", "surface-container-low": "#e8f8e4", "tertiary-fixed-dim": "#afcdbf",
+            "on-secondary-container": "#516a60", "on-tertiary-container": "#163027",
+            "surface-dim": "#cedfcb", "primary-fixed": "#ccebca", "primary-fixed-dim": "#b0ceaf"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #edfee9 0%, #f5fdf2 100%);
+      color: #111f12;
+    }
+
+    .texture-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+
+    .ambient-shadow {
+      box-shadow: 0 8px 32px rgba(45, 59, 45, 0.08), 0 2px 8px rgba(45, 59, 45, 0.04);
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes pulse-subtle {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    .fade-in {
+      animation: fadeSlideUp 0.35s ease forwards;
+    }
+
+    .slide-in {
+      animation: slideInRight 0.4s ease forwards;
+    }
+
+    .pulse {
+      animation: pulse-subtle 2s ease-in-out infinite;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 31, 18, 0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .accordion-content.open {
+      max-height: 4000px;
+    }
+
+    .tab-btn.active {
+      background: #4a654b;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(74, 101, 75, 0.2);
+    }
+
+    .tab-btn {
+      transition: all 0.2s;
+    }
+
+    .case-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(195, 200, 191, 0.4);
+    }
+
+    .case-card:hover {
+      box-shadow: 0 16px 40px rgba(45, 59, 45, 0.12);
+      border-color: rgba(74, 101, 75, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 19px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #4a654b, #c3c8bf);
+    }
+
+    .severity-low {
+      background: #d1fae5;
+      color: #065f46;
+      border-color: #6ee7b7;
+    }
+
+    .severity-moderate {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+
+    .severity-high {
+      background: #ffedd5;
+      color: #9a3412;
+      border-color: #fdba74;
+    }
+
+    .severity-critical {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+
+    .status-draft {
+      background: #f3f4f6;
+      color: #374151;
+      border-color: #d1d5db;
+    }
+
+    .status-active {
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #93c5fd;
+    }
+
+    .status-monitoring {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+
+    .status-resolved {
+      background: #d1fae5;
+      color: #065f46;
+      border-color: #6ee7b7;
+    }
+
+    .status-archived {
+      background: #ede9fe;
+      color: #5b21b6;
+      border-color: #c4b5fd;
+    }
+
+    .evidence-thumb {
+      background: linear-gradient(135deg, #e8f8e4 0%, #dcedd9 100%);
+      border: 1px solid #c3c8bf;
+      border-radius: 12px;
+      width: 100%;
+      padding-top: 70%;
+      position: relative;
+    }
+
+    .evidence-thumb-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    #toastEl {
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+
+    #toastEl.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #toastEl.hide {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    input[type=text],
+    input[type=date],
+    select,
+    textarea {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4a654b 0%, #334d35 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(74, 101, 75, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 101, 75, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #e8f8e4;
+      color: #111f12;
+      border: 1.5px solid #c3c8bf;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: #d7e7d3;
+      border-color: #4a654b;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1.5px solid #fca5a5;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn-danger:hover {
+      background: #fca5a5;
+      transform: translateY(-2px);
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #737971;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .field-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #c3c8bf;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #111f12;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .field-input:focus {
+      border-color: #4a654b;
+      box-shadow: 0 0 0 3px rgba(74, 101, 75, 0.1);
+      background: #fafff8;
+    }
+
+    .ms {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, rgba(74, 101, 75, 0.08) 0%, rgba(195, 200, 191, 0.04) 100%);
+      border: 1px solid rgba(74, 101, 75, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4a654b;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #737971;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen relative overflow-x-hidden">
+  <div class="fixed inset-0 z-0 texture-overlay pointer-events-none"></div>
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 w-full z-50 h-24 glass-effect shadow-sm">
+    <div class="w-full h-full max-w-7xl mx-auto px-5 md:px-16 flex items-center gap-6">
+      <button onclick="window.location.href='safe.html'"
+        class="flex items-center gap-1 text-white bg-[#4a654b] hover:bg-[#334d35] transition-colors text-sm font-medium px-4 py-2 shadow-sm"
+        style="border-radius: 0;">
+        <span class="ms">arrow_back</span> Back
+      </button>
+      <a href="index.html" style="text-decoration: none; cursor: pointer;">
+        <span class="font-bold text-primary hover:opacity-80 transition-opacity"
+          style="font-family:'Playfair Display',serif; font-size: 2.5rem; line-height: 1.2;">SafeSphere</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO HEADER -->
+  <div class="relative z-10 pt-32 pb-8 px-5 md:px-16 max-w-7xl mx-auto">
+    <div class="flex items-start gap-4 mb-6">
+      <div
+        class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-container to-primary flex items-center justify-center flex-shrink-0 shadow-md">
+        <span class="ms text-white" style="font-size:28px">inventory_2</span>
+      </div>
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold text-primary" style="font-family:'Playfair Display',serif;">Evidence
+          Vault</h1>
+        <p class="text-on-surface-variant text-sm md:text-base mt-2 max-w-3xl leading-relaxed"
+          style="font-family:'Source Serif 4',serif;">
+          A secure place to organize experiences, preserve important information, and understand patterns over time. You
+          remain in control of what is saved, analyzed, exported, or deleted.
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+      <div class="stat-card">
+        <div class="stat-value" id="statCases">0</div>
+        <div class="stat-label">Cases</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statEvidence">0</div>
+        <div class="stat-label">Evidence Items</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statEvents">0</div>
+        <div class="stat-label">Timeline Events</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statActive">0</div>
+        <div class="stat-label">Active Cases</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CASE LIST -->
+  <div class="relative z-10 px-5 md:px-16 max-w-7xl mx-auto pb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    id="caseListContainer"></div>
+
+  <!-- PRIVACY FOOTER -->
+  <div class="relative z-10 px-5 md:px-16 max-w-7xl mx-auto pb-10">
+    <div
+      class="bg-gradient-to-br from-white to-surface-container-lowest rounded-2xl p-8 border border-outline-variant/20 ambient-shadow">
+      <p class="text-xs font-bold uppercase tracking-widest text-outline mb-4">Your Information. Your Choice.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          Nothing
+          is shared automatically.</p>
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          Evidence
+          belongs to you.</p>
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          Reports
+          are generated only with your consent.</p>
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          Cases
+          can be deleted permanently.</p>
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          Pattern
+          recognition can be disabled.</p>
+        <p class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold text-lg">✓</span>
+          You
+          control every decision.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toastEl"
+    class="hide fixed bottom-8 left-1/2 -translate-x-1/2 z-[300] bg-on-surface text-surface rounded-xl px-6 py-3 text-sm font-semibold shadow-xl flex items-center gap-2"
+    style="opacity:0;transform:translateY(16px);">
+    <span class="ms" style="font-size:18px" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Saved.</span>
+  </div>
+
+  <!-- ===================== MODALS ===================== -->
+
+  <!-- CASE DETAIL MODAL -->
+  <div id="caseDetailModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col ambient-shadow overflow-hidden">
+      <!-- Header (fixed) -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-outline-variant/20 bg-gradient-to-r from-white to-surface-container-lowest z-10 shrink-0">
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-container to-primary flex items-center justify-center">
+            <span class="ms text-white" style="font-size:24px">inventory_2</span>
+          </div>
+          <div>
+            <p class="text-[10px] text-outline uppercase tracking-widest font-bold" id="cdCaseId">CASE #—</p>
+            <p class="font-bold text-lg text-on-surface leading-tight" id="cdCaseTitle">Loading…</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="exportJSONReport()" class="btn-secondary text-xs"><span class="ms"
+              style="font-size:16px">data_object</span> Export Case File (JSON)</button>
+          <button onclick="openDeleteCaseModal()"
+            class="btn-secondary text-xs border-red-200 text-red-600 hover:bg-red-50"
+            title="Permanently Delete Case"><span class="ms" style="font-size:16px">delete</span></button>
+          <button onclick="closeModal('caseDetailModal')"
+            class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center transition-colors"><span
+              class="ms text-outline">close</span></button>
+        </div>
+      </div>
+
+      <!-- Body (scrollable) -->
+      <div class="flex-1 overflow-y-auto flex flex-col">
+        <!-- Sub-tabs inside case detail -->
+        <div
+          class="flex gap-2 px-6 pt-4 pb-3 overflow-x-auto shrink-0 border-b border-outline-variant/10 bg-surface-container-lowest/50">
+          <button
+            class="case-tab-btn active rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="dashboard" onclick="switchCaseTab('dashboard')">Dashboard</button>
+          <button class="case-tab-btn rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="timeline" onclick="switchCaseTab('timeline')">Timeline</button>
+          <button class="case-tab-btn rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="evidence" onclick="switchCaseTab('evidence')">Evidence</button>
+          <button class="case-tab-btn rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="details" onclick="switchCaseTab('details')">Case Details</button>
+          <button class="case-tab-btn rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="culture" onclick="switchCaseTab('culture')">Patterns</button>
+          <button class="case-tab-btn rounded-xl px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors"
+            data-ctab="consent" onclick="switchCaseTab('consent')">Consent Log</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="ctab-dashboard" class="case-tab-content p-6 space-y-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card">
+              <div class="stat-value text-lg" id="dashSeverity">—</div>
+              <div class="stat-label">Severity</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value text-lg" id="dashStatus">—</div>
+              <div class="stat-label">Status</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value text-lg" id="dashEvidence">0</div>
+              <div class="stat-label">Evidence Items</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value text-lg" id="dashEvents">0</div>
+              <div class="stat-label">Timeline Events</div>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-3">Quick Info</p>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-outline-variant text-xs">Date Opened</p>
+                <p class="font-semibold text-on-surface" id="dashOpened">—</p>
+              </div>
+              <div>
+                <p class="text-outline-variant text-xs">Last Updated</p>
+                <p class="font-semibold text-on-surface" id="dashUpdated">—</p>
+              </div>
+              <div>
+                <p class="text-outline-variant text-xs">Threats</p>
+                <p class="font-semibold text-on-surface" id="dashThreats">—</p>
+              </div>
+              <div>
+                <p class="text-outline-variant text-xs">Platforms</p>
+                <p class="font-semibold text-on-surface" id="dashPlatforms">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="ctab-timeline" class="case-tab-content hidden p-6">
+          <div class="flex justify-between items-center mb-4">
+            <p class="text-xs uppercase tracking-widest text-outline font-semibold">Timeline Events</p>
+            <button onclick="openAddEventModal()" class="btn-primary text-xs"><span class="ms"
+                style="font-size:15px">add</span> Add Event</button>
+          </div>
+          <div id="timelineContainer" class="space-y-4 relative pl-8">
+            <div class="timeline-line"></div>
+          </div>
+        </div>
+
+        <!-- Evidence Tab -->
+        <div id="ctab-evidence" class="case-tab-content hidden p-6">
+          <div class="flex justify-between items-center mb-4">
+            <p class="text-xs uppercase tracking-widest text-outline font-semibold">Evidence Inventory</p>
+            <button onclick="openAddEvidenceModal()" class="btn-primary text-xs"><span class="ms"
+                style="font-size:15px">upload_file</span> Add Evidence</button>
+          </div>
+          <div id="evidenceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- Case Details Tab -->
+        <div id="ctab-details" class="case-tab-content hidden p-6">
+          <p class="text-xs uppercase tracking-widest text-outline font-semibold mb-4">Case Details</p>
+          <div id="detailsForm" class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          <button onclick="saveDetails()" class="btn-primary mt-6"><span class="ms" style="font-size:16px">save</span>
+            Save Details</button>
+        </div>
+
+        <!-- Patterns Tab -->
+        <div id="ctab-culture" class="case-tab-content hidden p-6">
+          <p class="text-xs uppercase tracking-widest text-outline font-semibold mb-4">Pattern Analysis</p>
+          <div id="patternsContent" class="space-y-4"></div>
+        </div>
+
+        <!-- Consent Log Tab -->
+        <div id="ctab-consent" class="case-tab-content hidden p-6">
+          <p class="text-xs uppercase tracking-widest text-outline font-semibold mb-4">Consent Log</p>
+          <div id="consentLogContainer" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Case Action Footer -->
+      <div
+        class="p-6 border-t border-outline-variant/20 flex flex-wrap gap-2 sticky bottom-0 bg-gradient-to-r from-white to-surface-container-lowest">
+        <button onclick="changeStatus('active')" class="btn-secondary text-xs"><span class="ms"
+            style="font-size:15px">play_circle</span> Set Active</button>
+        <button onclick="changeStatus('monitoring')" class="btn-secondary text-xs"><span class="ms"
+            style="font-size:15px">visibility</span> Monitor</button>
+        <button onclick="changeStatus('resolved')" class="btn-secondary text-xs"><span class="ms"
+            style="font-size:15px">check_circle</span> Resolve</button>
+        <button onclick="changeStatus('archived')" class="btn-secondary text-xs"><span class="ms"
+            style="font-size:15px">archive</span> Archive</button>
+        <button onclick="openDeleteCaseModal()" class="btn-danger text-xs ml-auto"><span class="ms"
+            style="font-size:15px">delete_forever</span> Delete Case</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW CASE MODAL -->
+  <div id="newCaseModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-md ambient-shadow p-6">
+      <div class="flex items-center justify-between mb-6">
+        <p class="font-bold text-lg text-on-surface">New Case</p>
+        <button onclick="closeModal('newCaseModal')"><span class="ms text-outline">close</span></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="field-label">Case Title</label>
+          <input id="newCaseTitle" type="text" class="field-input" placeholder="Brief description (optional)">
+        </div>
+        <div>
+          <label class="field-label">Primary Threat Type</label>
+          <select id="newCaseThreat" class="field-input">
+            <option value="">— Select —</option>
+            <option>Harassment</option>
+            <option>Sextortion</option>
+            <option>Blackmail</option>
+            <option>Grooming</option>
+            <option>Manipulation</option>
+            <option>Bullying</option>
+            <option>Impersonation</option>
+            <option>Doxxing</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Platform(s)</label>
+          <input id="newCasePlatform" type="text" class="field-input" placeholder="e.g. Instagram, WhatsApp">
+        </div>
+        <div>
+          <label class="field-label">Status</label>
+          <select id="newCaseStatus" class="field-input">
+            <option value="draft">Draft</option>
+            <option value="active" selected>Active</option>
+            <option value="monitoring">Monitoring</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-6">
+        <button onclick="createCase()" class="btn-primary flex-1 justify-center text-sm">Create Case</button>
+        <button onclick="closeModal('newCaseModal')" class="btn-secondary text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATUS CHANGE CONFIRM MODAL -->
+  <div id="statusModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-sm ambient-shadow p-6">
+      <p class="font-bold text-lg text-on-surface mb-2">Confirm Status Change</p>
+      <p class="text-sm text-on-surface-variant mb-6" id="statusModalMsg">Are you sure?</p>
+      <div class="flex gap-2">
+        <button id="statusConfirmBtn" class="btn-primary flex-1 justify-center text-sm">Confirm</button>
+        <button onclick="closeModal('statusModal')" class="btn-secondary text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CASE MODAL -->
+  <div id="deleteCaseModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-sm ambient-shadow p-6">
+      <p class="font-bold text-red-700 mb-2 flex items-center gap-2 text-lg"><span class="ms">warning</span> Delete Case
+        Permanently</p>
+      <p class="text-sm text-on-surface-variant mb-4">This action cannot be undone. All timeline events, evidence
+        records, and notes will be permanently removed.</p>
+      <p class="text-sm font-medium text-on-surface mb-3">Type <strong>DELETE CASE</strong> to confirm:</p>
+      <input type="text" id="deleteConfirmInput" class="field-input mb-4" placeholder="DELETE CASE">
+      <div class="flex gap-2">
+        <button onclick="confirmDeleteCase()" class="btn-danger flex-1 justify-center text-sm">Delete Forever</button>
+        <button onclick="closeModal('deleteCaseModal')" class="btn-secondary text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD EVENT MODAL -->
+  <div id="addEventModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-md ambient-shadow p-6">
+      <div class="flex items-center justify-between mb-6">
+        <p class="font-bold text-lg text-on-surface" id="addEventModalTitle">Add Timeline Event</p>
+        <button onclick="closeModal('addEventModal')"><span class="ms text-outline">close</span></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="field-label">Event Date</label>
+          <input type="date" id="evDate" class="field-input">
+        </div>
+        <div>
+          <label class="field-label">Event Type</label>
+          <select id="evType" class="field-input">
+            <option>Initial Contact</option>
+            <option>Boundary Testing</option>
+            <option>Threat Detected</option>
+            <option>Demand Made</option>
+            <option>Action Taken</option>
+            <option>Escalation</option>
+            <option>Platform Change</option>
+            <option>User Note</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Summary</label>
+          <textarea id="evSummary" class="field-input" rows="3" placeholder="Describe what happened…"></textarea>
+        </div>
+        <div>
+          <label class="field-label">Risk Level</label>
+          <select id="evRisk" class="field-input">
+            <option value="LOW">LOW</option>
+            <option value="MODERATE">MODERATE</option>
+            <option value="HIGH">HIGH</option>
+            <option value="CRITICAL">CRITICAL</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-6">
+        <button onclick="saveEvent()" class="btn-primary flex-1 justify-center text-sm">Save Event</button>
+        <button onclick="closeModal('addEventModal')" class="btn-secondary text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD EVIDENCE MODAL -->
+  <div id="addEvidenceModal" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl w-full max-w-md ambient-shadow p-6">
+      <div class="flex items-center justify-between mb-6">
+        <p class="font-bold text-lg text-on-surface">Add Evidence</p>
+        <button onclick="closeModal('addEvidenceModal')"><span class="ms text-outline">close</span></button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="field-label">Evidence Type</label>
+          <select id="evdType" class="field-input">
+            <option>Screenshot</option>
+            <option>Screen Recording</option>
+            <option>Chat Export</option>
+            <option>Document</option>
+            <option>Audio File</option>
+            <option>URL</option>
+            <option>Photo</option>
+            <option>User Note</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Platform (optional)</label>
+          <input type="text" id="evdPlatform" class="field-input" placeholder="e.g. Instagram">
+        </div>
+        <div>
+          <label class="field-label">Date Captured (optional)</label>
+          <input type="date" id="evdDate" class="field-input">
+        </div>
+        <div>
+          <label class="field-label">Description</label>
+          <textarea id="evdDesc" class="field-input" rows="2"
+            placeholder="Brief description of this evidence…"></textarea>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-6">
+        <button onclick="saveEvidence()" class="btn-primary flex-1 justify-center text-sm">Add Evidence</button>
+        <button onclick="closeModal('addEvidenceModal')" class="btn-secondary text-sm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // DATA MODEL
+    // ============================================================
+    const STORAGE_KEY = 'ss_cases';
+    let cases = [];
+    let currentCaseId = null;
+    let currentTab = 'active';
+    let editingEventId = null;
+
+    // ----------------------------------------------------------------
+    // SEED DATA
+    // ----------------------------------------------------------------
+    const SEED = [];
+
+    // ----------------------------------------------------------------
+    // INIT & API CALLS
+    // ----------------------------------------------------------------
+    async function init() {
+      // Clear legacy localStorage vault state if needed
+      if (!localStorage.getItem('vault_cleared_once_pg')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem('vault_cleared_once_pg', 'true');
+      }
+
+      try {
+        const response = await fetch('/api/cases');
+        if (response.ok) {
+          cases = await response.json();
+        } else {
+          console.error("Failed to fetch cases from API");
+        }
+      } catch (err) {
+        console.error("API error, falling back to local memory", err);
+      }
+
+      renderCaseList();
+      updateStats();
+    }
+
+    function save() {
+      // Legacy function; data persistence is now handled directly via API in updateCase/createCase
+      updateStats();
+    }
+
+    function getCase(id) { return cases.find(c => c.id === id); }
+
+    async function updateCase(updated) {
+      updated.dateUpdated = today();
+      cases = cases.map(c => c.id === updated.id ? updated : c);
+
+      try {
+        await fetch('/api/cases/' + updated.id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated)
+        });
+      } catch (e) {
+        console.error('Failed to sync case update to DB', e);
+      }
+      save();
+    }
+
+    function today() { return new Date().toISOString().split('T')[0]; }
+
+    function formatDate(dStr) {
+      if (!dStr) return 'Unknown';
+      const d = new Date(dStr);
+      const now = new Date();
+      if (d.toDateString() === now.toDateString()) return 'Today';
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function updateStats() {
+      const totalEvidence = cases.reduce((sum, c) => sum + (c.evidence?.length || 0), 0);
+      const totalEvents = cases.reduce((sum, c) => sum + (c.timeline?.length || 0), 0);
+      const activeCases = cases.filter(c => c.status === 'active').length;
+
+      document.getElementById('statCases').textContent = cases.length;
+      document.getElementById('statEvidence').textContent = totalEvidence;
+      document.getElementById('statEvents').textContent = totalEvents;
+      document.getElementById('statActive').textContent = activeCases;
+    }
+
+    function renderCaseList() {
+      const container = document.getElementById('caseListContainer');
+      const filtered = cases;
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-16 text-on-surface-variant">
+      <span class="ms" style="font-size:64px;opacity:0.2">inventory_2</span>
+      <p class="mt-4 text-base font-medium">No cases here yet.</p>
+      <p class="text-sm mt-1 opacity-75">Create your first case to get started.</p>
+      <button onclick="openNewCaseModal()" class="btn-primary mt-6 mx-auto"><span class="ms" style="font-size:15px">add</span> New Case</button>
+    </div>`;
+        return;
+      }
+      container.innerHTML = filtered.map(c => caseCardHTML(c)).join('');
+    }
+
+    function caseCardHTML(c) {
+      const sevClass = { CRITICAL: 'severity-critical', HIGH: 'severity-high', MODERATE: 'severity-moderate', LOW: 'severity-low' }[c.severity] || 'severity-low';
+      const stClass = { draft: 'status-draft', active: 'status-active', monitoring: 'status-monitoring', resolved: 'status-resolved', archived: 'status-archived' }[c.status] || 'status-draft';
+
+      let displayTitle = c.title || 'Untitled Case';
+      const dateMatch = displayTitle.match(/ \d{4}-\d{2}-\d{2}$/);
+      if (dateMatch) {
+        displayTitle = displayTitle.replace(dateMatch[0], '');
+      }
+
+      return `<div class="case-card bg-surface-container-lowest rounded-3xl p-6 ambient-shadow fade-in flex flex-col h-full hover:border-primary/40">
+    <div class="flex items-start justify-between gap-3 mb-4">
+      <div class="flex-1">
+        <p class="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">${c.caseNum}</p>
+        <p class="font-bold text-on-surface text-lg leading-tight">${displayTitle}</p>
+        <p class="text-xs text-on-surface-variant mt-2 opacity-80">${c.threats.join(' • ')}</p>
+      </div>
+      <div class="flex flex-col items-end gap-2 shrink-0">
+        <span class="rounded-lg border px-3 py-1.5 text-[10px] font-bold tracking-wide ${sevClass}">${c.severity} RISK</span>
+        <span class="rounded-lg border px-3 py-1.5 text-[10px] font-bold tracking-wide ${stClass} uppercase">${c.status}</span>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-xs text-on-surface-variant mb-5 bg-gradient-to-br from-surface-container-low to-surface-container p-4 rounded-2xl border border-outline-variant/20 flex-1">
+      <div><p class="text-[10px] text-outline uppercase tracking-wider font-bold mb-1">Opened</p><p class="font-semibold text-on-surface">${formatDate(c.dateOpened)}</p></div>
+      <div><p class="text-[10px] text-outline uppercase tracking-wider font-bold mb-1">Updated</p><p class="font-semibold text-on-surface">${formatDate(c.dateUpdated)}</p></div>
+      <div><p class="text-[10px] text-outline uppercase tracking-wider font-bold mb-1">Evidence</p><p class="font-semibold text-primary">${c.evidence.length} items</p></div>
+      <div><p class="text-[10px] text-outline uppercase tracking-wider font-bold mb-1">Platforms</p><p class="font-semibold truncate">${c.platforms.join(', ')}</p></div>
+    </div>
+    
+    <div class="flex items-center gap-2 mt-auto pt-4 border-t border-outline-variant/10">
+      <button onclick="openCase('${c.id}')" class="btn-primary text-xs flex-1 justify-center py-2"><span class="ms" style="font-size:16px">open_in_full</span> View</button>
+      <button onclick="openCase('${c.id}','evidence')" class="w-10 h-10 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-on-surface transition-all hover:scale-105" title="Add Evidence"><span class="ms" style="font-size:18px">upload_file</span></button>
+    </div>
+  </div>`;
+    }
+
+    // --------------------------------------------------------
+    // CASE OPERATIONS
+    // --------------------------------------------------------
+    function createCase() {
+      const title = document.getElementById('newCaseTitle').value.trim() || 'Untitled Case';
+      const threat = document.getElementById('newCaseThreat').value;
+      const platform = document.getElementById('newCasePlatform').value.trim() || 'Unknown';
+      const status = document.getElementById('newCaseStatus').value;
+
+      if (!threat) {
+        showToast('Please select a threat type.', 'error', true);
+        return;
+      }
+
+      const newCase = {
+        id: 'c' + Date.now(),
+        caseNum: '#' + (cases.length + 1).toString().padStart(3, '0'),
+        title,
+        threats: [threat],
+        severity: 'LOW',
+        status,
+        platforms: [platform],
+        dateOpened: today(),
+        dateUpdated: today(),
+        relationship: '',
+        ageCategory: '',
+        knownSince: '',
+        location: '',
+        notes: '',
+        personName: '',
+        displayName: '',
+        alias: '',
+        unknownPerson: false,
+        timeline: [],
+        evidence: [],
+        consentLog: [],
+        details: {}
+      };
+
+      cases.push(newCase);
+      addConsentLog(newCase, 'Case created by user.');
+
+      fetch('/api/cases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCase)
+      }).catch(err => console.error("Failed to save new case to DB", err));
+
+      save();
+      closeModal('newCaseModal');
+      renderCaseList();
+      showToast('Case created successfully.');
+    }
+
+    function openCase(caseId, tab = 'dashboard') {
+      currentCaseId = caseId;
+      const c = getCase(caseId);
+      if (!c) return;
+
+      // Defensive initialization for cases synced from safe.html
+      c.consentLog = c.consentLog || [];
+      c.timeline = c.timeline || [];
+      c.evidence = c.evidence || [];
+      c.platforms = c.platforms || ['Unknown'];
+      c.threats = c.threats || ['Unknown'];
+
+      document.getElementById('cdCaseId').textContent = c.caseNum;
+      document.getElementById('cdCaseTitle').textContent = c.title || 'Untitled Case';
+
+      switchCaseTab(tab);
+      renderDashboard(c);
+      renderTimeline(c);
+      renderEvidence(c);
+      renderDetailsForm(c);
+      renderPatterns(c);
+      renderConsentLog(c);
+
+      openModal('caseDetailModal');
+    }
+
+    function renderDashboard(c) {
+      document.getElementById('dashSeverity').textContent = c.severity;
+      document.getElementById('dashStatus').textContent = c.status.toUpperCase();
+      document.getElementById('dashEvidence').textContent = c.evidence.length;
+      document.getElementById('dashEvents').textContent = c.timeline.length;
+      document.getElementById('dashOpened').textContent = c.dateOpened;
+      document.getElementById('dashUpdated').textContent = c.dateUpdated;
+      document.getElementById('dashThreats').textContent = c.threats.join(', ');
+      document.getElementById('dashPlatforms').textContent = c.platforms.join(', ');
+    }
+
+    function switchCaseTab(tabName) {
+      document.querySelectorAll('.case-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.ctab === tabName);
+      });
+      document.querySelectorAll('.case-tab-content').forEach(content => {
+        content.classList.toggle('hidden', !content.id.endsWith(tabName));
+      });
+    }
+
+    function changeStatus(newStatus) {
+      const c = getCase(currentCaseId);
+      if (!c) return;
+      const msg = `Change status from ${c.status} to ${newStatus}?`;
+      document.getElementById('statusModalMsg').textContent = msg;
+      document.getElementById('statusConfirmBtn').onclick = () => {
+        c.status = newStatus;
+        addConsentLog(c, `User changed case status to ${newStatus}.`);
+        updateCase(c);
+        closeModal('statusModal');
+        renderDashboard(c);
+        renderCaseList();
+        showToast(`Status changed to ${newStatus}.`);
+      };
+      openModal('statusModal');
+    }
+
+    function openDeleteCaseModal() {
+      document.getElementById('deleteConfirmInput').value = '';
+      openModal('deleteCaseModal');
+    }
+
+    async function confirmDeleteCase() {
+      const input = document.getElementById('deleteConfirmInput').value;
+      if (input !== 'DELETE CASE') {
+        showToast('Please type DELETE CASE to confirm.', 'error', true);
+        return;
+      }
+      const c = getCase(currentCaseId);
+      if (!c) return;
+      cases = cases.filter(x => x.id !== currentCaseId);
+
+      try {
+        await fetch('/api/cases/' + currentCaseId, { method: 'DELETE' });
+      } catch (err) {
+        console.error("Failed to delete case from DB", err);
+      }
+
+      save();
+      closeModal('deleteCaseModal');
+      closeModal('caseDetailModal');
+      renderCaseList();
+      showToast('Case deleted successfully.');
+    }
+
+    // ----------------------------------------------------------------
+    // TIMELINE
+    // ----------------------------------------------------------------
+    function renderTimeline(c) {
+      const container = document.getElementById('timelineContainer');
+      if (!c.timeline.length) {
+        container.innerHTML = '<p class="text-sm text-on-surface-variant italic col-span-3 pl-0">No timeline events yet.</p>';
+        return;
+      }
+      const sorted = [...c.timeline].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+      container.innerHTML = sorted.map((ev, idx) => {
+        const riskColors = { LOW: 'text-emerald-600', MODERATE: 'text-amber-600', HIGH: 'text-orange-600', CRITICAL: 'text-red-600' };
+        return `
+    <div class="relative fade-in" style="animation-delay:${idx * 50}ms">
+      <div class="absolute left-0 w-10 h-10 rounded-full border-4 border-white bg-primary flex items-center justify-center -translate-x-[21px]">
+        <span class="ms text-white" style="font-size:16px">event</span>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/20 ml-4">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            <p class="font-semibold text-on-surface">${ev.date || '—'} — ${ev.type}</p>
+            <p class="text-xs text-on-surface-variant mt-1">${ev.summary || '—'}</p>
+          </div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-lg border ${riskColors[ev.risk] || 'text-gray-600'} border-current/30 bg-current/5">${ev.risk}</span>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button onclick="editEvent('${ev.id}')" class="text-xs text-primary hover:underline">Edit</button>
+          <button onclick="deleteEvent('${ev.id}')" class="text-xs text-red-600 hover:underline">Delete</button>
+        </div>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+    function openAddEventModal() {
+      editingEventId = null;
+      document.getElementById('addEventModalTitle').textContent = 'Add Timeline Event';
+      document.getElementById('evDate').value = today();
+      document.getElementById('evType').value = 'Initial Contact';
+      document.getElementById('evSummary').value = '';
+      document.getElementById('evRisk').value = 'LOW';
+      openModal('addEventModal');
+    }
+
+    function editEvent(evId) {
+      const c = getCase(currentCaseId);
+      const ev = c.timeline.find(e => e.id === evId);
+      if (!ev) return;
+      editingEventId = evId;
+      document.getElementById('addEventModalTitle').textContent = 'Edit Event';
+      document.getElementById('evDate').value = ev.date;
+      document.getElementById('evType').value = ev.type;
+      document.getElementById('evSummary').value = ev.summary;
+      document.getElementById('evRisk').value = ev.risk;
+      openModal('addEventModal');
+    }
+
+    function saveEvent() {
+      const c = getCase(currentCaseId);
+      const date = document.getElementById('evDate').value || today();
+      const type = document.getElementById('evType').value;
+      const summary = document.getElementById('evSummary').value.trim();
+      const risk = document.getElementById('evRisk').value;
+      if (!summary) { showToast('Please add a summary.', 'error', true); return; }
+
+      if (editingEventId) {
+        const ev = c.timeline.find(e => e.id === editingEventId);
+        if (ev) { ev.date = date; ev.type = type; ev.summary = summary; ev.risk = risk; }
+      } else {
+        c.timeline.push({ id: 'e' + Date.now(), date, type, summary, risk });
+        addConsentLog(c, 'User added timeline event: ' + type);
+      }
+      updateCase(c);
+      closeModal('addEventModal');
+      renderTimeline(c);
+      renderDashboard(c);
+      showToast('Event saved.');
+    }
+
+    function deleteEvent(evId) {
+      const c = getCase(currentCaseId);
+      c.timeline = c.timeline.filter(e => e.id !== evId);
+      addConsentLog(c, 'User deleted timeline event.');
+      updateCase(c);
+      renderTimeline(c);
+      renderDashboard(c);
+      showToast('Event deleted.');
+    }
+
+    // ----------------------------------------------------------------
+    // EVIDENCE
+    // ----------------------------------------------------------------
+    function renderEvidence(c) {
+      const grid = document.getElementById('evidenceGrid');
+      if (!c.evidence.length) {
+        grid.innerHTML = '<p class="text-sm text-on-surface-variant italic col-span-3">No evidence added yet.</p>';
+        return;
+      }
+      const icons = { Screenshot: 'screenshot_monitor', 'Screen Recording': 'videocam', 'Chat Export': 'chat', 'Document': 'description', 'Audio File': 'mic', 'URL': 'link', 'Photo': 'image', 'User Note': 'edit_note' };
+      grid.innerHTML = c.evidence.map((ev, idx) => `
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 p-4 fade-in" style="animation-delay:${idx * 50}ms">
+      <div class="evidence-thumb mb-3">
+        <div class="evidence-thumb-inner">
+          <span class="ms text-primary" style="font-size:32px">${icons[ev.type] || 'attach_file'}</span>
+          <p class="text-xs text-on-surface-variant font-medium">${ev.type}</p>
+        </div>
+      </div>
+      <p class="text-xs text-outline uppercase tracking-wider font-semibold">${ev.platform || '—'}</p>
+      <p class="text-sm text-on-surface font-medium mt-1 leading-snug line-clamp-2">${ev.desc || 'No description'}</p>
+      <p class="text-xs text-on-surface-variant mt-2">${ev.date || 'Date unknown'}</p>
+      <div class="flex items-center justify-between mt-3 pt-3 border-t border-outline-variant/10">
+        <span class="text-xs px-2 py-1 rounded-full border ${ev.verified === 'Verified' ? 'border-emerald-300 text-emerald-700 bg-emerald-50' : 'border-outline-variant text-outline bg-surface-container'}">${ev.verified}</span>
+        <button onclick="deleteEvidence('${ev.id}')" class="p-1 rounded hover:bg-red-50 text-outline hover:text-red-600 transition-colors"><span class="ms" style="font-size:16px">delete</span></button>
+      </div>
+    </div>`).join('');
+    }
+
+    function openAddEvidenceModal() {
+      document.getElementById('evdType').value = 'Screenshot';
+      document.getElementById('evdPlatform').value = '';
+      document.getElementById('evdDate').value = today();
+      document.getElementById('evdDesc').value = '';
+      openModal('addEvidenceModal');
+    }
+
+    function saveEvidence() {
+      const c = getCase(currentCaseId);
+      const ev = {
+        id: 'ev' + Date.now(),
+        type: document.getElementById('evdType').value,
+        platform: document.getElementById('evdPlatform').value || '—',
+        date: document.getElementById('evdDate').value || today(),
+        desc: document.getElementById('evdDesc').value.trim() || 'No description',
+        verified: 'Unverified'
+      };
+      c.evidence.push(ev);
+      addConsentLog(c, 'User added evidence: ' + ev.type);
+      updateCase(c);
+      closeModal('addEvidenceModal');
+      renderEvidence(c);
+      renderDashboard(c);
+      showToast('Evidence added.');
+    }
+
+    function deleteEvidence(evId) {
+      const c = getCase(currentCaseId);
+      c.evidence = c.evidence.filter(e => e.id !== evId);
+      addConsentLog(c, 'User deleted evidence item.');
+      updateCase(c);
+      renderEvidence(c);
+      renderDashboard(c);
+      showToast('Evidence removed.');
+    }
+
+    // ----------------------------------------------------------------
+    // CASE DETAILS FORM
+    // ----------------------------------------------------------------
+    function renderDetailsForm(c) {
+      const fields = [
+        { id: 'personName', label: 'Person Name', type: 'text', val: c.personName },
+        { id: 'displayName', label: 'Display Name / Username', type: 'text', val: c.displayName },
+        { id: 'alias', label: 'Alias', type: 'text', val: c.alias },
+        { id: 'relationship', label: 'Relationship Type', type: 'select', val: c.relationship, options: ['Partner', 'Family', 'Friend', 'Acquaintance', 'Stranger', 'Other'] },
+        { id: 'ageCategory', label: 'Age Category', type: 'select', val: c.ageCategory, options: ['Minor', 'Young Adult', 'Adult', 'Senior', 'Unknown'] },
+        { id: 'knownSince', label: 'Known Since', type: 'date', val: c.knownSince },
+        { id: 'location', label: 'Location (optional)', type: 'text', val: c.location },
+        { id: 'primaryPlatform', label: 'Primary Platform', type: 'text', val: c.platforms[0] || '' },
+        { id: 'notes', label: 'Notes', type: 'textarea', val: c.notes },
+      ];
+      document.getElementById('detailsForm').innerHTML = fields.map(f => {
+        const cls = 'field-input';
+        let inp = '';
+        if (f.type === 'select') {
+          inp = `<select id="df_${f.id}" class="${cls}">${f.options.map(o => `<option ${o === f.val ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
+        } else if (f.type === 'textarea') {
+          inp = `<textarea id="df_${f.id}" class="${cls}" rows="3">${f.val || ''}</textarea>`;
+        } else {
+          inp = `<input type="${f.type}" id="df_${f.id}" class="${cls}" value="${f.val || ''}">`;
+        }
+        return `<div><label class="field-label">${f.label}</label>${inp}</div>`;
+      }).join('');
+    }
+
+    function saveDetails() {
+      const c = getCase(currentCaseId);
+      c.personName = document.getElementById('df_personName').value;
+      c.displayName = document.getElementById('df_displayName').value;
+      c.alias = document.getElementById('df_alias').value;
+      c.relationship = document.getElementById('df_relationship').value;
+      c.ageCategory = document.getElementById('df_ageCategory').value;
+      c.knownSince = document.getElementById('df_knownSince').value;
+      c.location = document.getElementById('df_location').value;
+      c.notes = document.getElementById('df_notes').value;
+      const pp = document.getElementById('df_primaryPlatform').value;
+      if (pp && !c.platforms.includes(pp)) c.platforms.unshift(pp);
+      addConsentLog(c, 'User updated case details.');
+      updateCase(c);
+      showToast('Details saved.');
+      renderDashboard(c);
+      renderCaseList();
+    }
+
+    // ----------------------------------------------------------------
+    // PATTERNS TAB
+    // ----------------------------------------------------------------
+    function renderPatterns(c) {
+      const el = document.getElementById('patternsContent');
+      const hasAIData = c.whyMatters || (c.powerDynamics && c.powerDynamics.length);
+
+      if (hasAIData) {
+        // Display AI Generated Insights from safe.html
+        const pdHtml = (c.powerDynamics || []).map(p => `<li class="text-sm text-on-surface-variant flex gap-2"><span class="text-primary">•</span>${p}</li>`).join('');
+
+        let ccHtml = '';
+        if (c.culturalContext && c.culturalContext.tacticsDetected && c.culturalContext.tacticsDetected.length) {
+          ccHtml += `<div class="mt-4"><p class="text-xs font-semibold text-on-surface mb-2">Cultural & Linguistic Tactics:</p><div class="flex flex-wrap gap-2 mb-2">`;
+          ccHtml += c.culturalContext.tacticsDetected.map(t => `<span class="px-2 py-1 bg-red-100 text-red-800 border border-red-200 rounded text-[10px] font-bold uppercase tracking-wider">${t}</span>`).join('');
+          ccHtml += `</div><p class="text-xs text-on-surface-variant italic">${c.culturalContext.culturalImplications || ''}</p></div>`;
+        }
+
+        const actionsHtml = (c.actionItems && c.actionItems.immediate)
+          ? c.actionItems.immediate.map(a => `<li class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold">→</span>${a}</li>`).join('')
+          : '<li class="text-sm text-on-surface-variant italic">No AI action items recorded.</li>';
+
+        el.innerHTML = `
+        <div class="space-y-5">
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-2">Why It Matters</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">${c.whyMatters}</p>
+          </div>
+
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-3">Power Dynamics</p>
+            <ul class="space-y-1.5">${pdHtml || '<li class="text-sm text-on-surface-variant italic">None recorded.</li>'}</ul>
+            ${ccHtml}
+          </div>
+
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-3">Recommended Actions</p>
+            <ul class="space-y-1.5">${actionsHtml}</ul>
+          </div>
+        </div>`;
+      } else {
+        // Fallback to local heuristic patterns
+        const days = c.timeline.length > 1 ? Math.round((new Date(c.dateUpdated) - new Date(c.dateOpened)) / 86400000) : 0;
+        const escalationText = c.timeline.length >= 3
+          ? `The interaction progressed from ${c.timeline[0].type.toLowerCase()} to ${c.timeline[c.timeline.length - 1].type.toLowerCase()} over approximately ${days} day${days !== 1 ? 's' : ''}. ${c.severity === 'CRITICAL' || c.severity === 'HIGH' ? 'Threat intensity increased as time passed.' : ''}`
+          : 'Insufficient timeline data to describe escalation. Add more events to see patterns.';
+
+        const threatHistory = c.timeline.map(ev =>
+          `<div class="flex items-center gap-3"><span class="text-xs text-outline w-24 flex-shrink-0 font-medium">${ev.date}</span><span class="w-2 h-2 rounded-full bg-primary flex-shrink-0"></span><span class="text-sm text-on-surface-variant">${ev.type} — <span class="font-semibold">${ev.risk}</span></span></div>`
+        ).join('');
+
+        const warnings = {
+          Sextortion: ['Requests to move to private messaging', 'Increased secrecy demands', 'Contact via new accounts after blocking'],
+          Harassment: ['Messages at unusual hours', 'Contact through friends or family', 'Monitoring your social media'],
+          Grooming: ['Gift offers or special treatment', 'Requests for more personal information', 'Attempts to create dependency'],
+        };
+        const actions = ['Review privacy settings on all platforms', 'Preserve evidence early — do not delete', 'Strengthen support network', 'Report to platform trust & safety'];
+        const warnList = warnings[c.threats[0]] || ['Unusual contact frequency', 'Secrecy requests', 'Escalating demands'];
+
+        el.innerHTML = `
+        <div class="space-y-5">
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-2">Escalation Pattern (Local)</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">${escalationText}</p>
+            <p class="text-xs text-outline mt-3">Confidence: ${c.timeline.length >= 3 ? 'Medium' : 'Low'}</p>
+          </div>
+
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-3">Threat Classification History</p>
+            <div class="space-y-2">${threatHistory || '<p class="text-sm text-on-surface-variant italic">No timeline events yet.</p>'}</div>
+          </div>
+
+          <div class="bg-gradient-to-br from-surface-container-low to-surface-container rounded-xl p-5 border border-outline-variant/20">
+            <p class="text-xs text-outline uppercase tracking-widest font-semibold mb-3">Protective Insights</p>
+            <p class="text-xs font-semibold text-on-surface mb-2">Possible warning signs:</p>
+            <ul class="space-y-1.5 mb-4">${warnList.map(w => `<li class="text-sm text-on-surface-variant flex gap-2"><span class="text-primary">•</span>${w}</li>`).join('')}</ul>
+            <p class="text-xs font-semibold text-on-surface mb-2">Recommended actions:</p>
+            <ul class="space-y-1.5">${actions.map(a => `<li class="text-sm text-on-surface-variant flex gap-2"><span class="text-emerald-600 font-bold">→</span>${a}</li>`).join('')}</ul>
+          </div>
+        </div>`;
+      }
+    }
+
+    // ----------------------------------------------------------------
+    // CONSENT LOG
+    // ----------------------------------------------------------------
+    function addConsentLog(c, msg) {
+      const ts = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      c.consentLog.push(`[${ts}] ${msg}`);
+    }
+
+    function renderConsentLog(c) {
+      const el = document.getElementById('consentLogContainer');
+      if (!c.consentLog.length) {
+        el.innerHTML = '<p class="text-sm text-on-surface-variant italic">No consent actions logged.</p>';
+        return;
+      }
+      el.innerHTML = c.consentLog.map(l => `<div class="bg-surface-container rounded-lg p-3 border border-outline-variant/20 text-xs font-mono text-on-surface-variant">${l}</div>`).join('');
+    }
+
+    // ----------------------------------------------------------------
+    // JSON EXPORT - ROBUST, STRUCTURED, MACHINE-READABLE
+    // ----------------------------------------------------------------
+    function exportJSONReport() {
+      const c = getCase(currentCaseId);
+      if (!c) { showToast('No case loaded.'); return; }
+
+      // Build hierarchical JSON export representing the full investigation state
+      const jsonExport = {
+        case_information: {
+          case_id: c.id,
+          case_number: c.caseNum,
+          report_generated_at: new Date().toISOString(),
+          case_status: c.status,
+          analysis_duration: "Real-time AI Processing",
+          messages_analyzed: c.originalText ? c.originalText.split('\\n').length : 0
+        },
+        platform_details: {
+          platforms: c.platforms,
+          user_identifiers: c.personName || c.displayName || c.alias || 'Unknown Target',
+          known_relationship: c.relationship || 'Unspecified'
+        },
+        analysis_summary: {
+          total_threats_detected: c.threats ? c.threats.length : 0,
+          total_evidence_items: c.evidence ? c.evidence.length : 0,
+          total_timeline_events: c.timeline ? c.timeline.length : 0
+        },
+        threat_detection_results: {
+          detected_categories: c.fullThreats ? c.fullThreats.map(t => t.label) : c.threats,
+          confidence_scores: c.fullThreats ? c.fullThreats.map(t => ({ category: t.label, confidence: t.score })) : []
+        },
+        severity_assessment: {
+          overall_risk_score: c.severity,
+          explanation: c.reason || 'No explanation provided.'
+        },
+        threat_classification: {
+          primary_threat: c.threats && c.threats.length > 0 ? c.threats[0] : 'Unclassified',
+          secondary_threats: c.threats && c.threats.length > 1 ? c.threats.slice(1) : []
+        },
+        pattern_analysis: {
+          behavioral_trends: c.powerDynamics || [],
+          cultural_and_linguistic_coercion: c.culturalContext || {}
+        },
+        evidence_preservation: c.evidence ? c.evidence.map(ev => ({
+          evidence_id: ev.id,
+          date: ev.date,
+          type: ev.type,
+          platform: ev.platform,
+          description: ev.desc,
+          verification_status: ev.verified
+        })) : [],
+        evidence_timeline: c.timeline ? c.timeline.map(tl => ({
+          event_id: tl.id,
+          date: tl.date,
+          event_type: tl.type,
+          risk_level: tl.risk,
+          summary: tl.summary
+        })) : [],
+        chronological_events: c.timeline ? [...c.timeline].sort((a, b) => (a.date || '').localeCompare(b.date || '')) : [],
+        suspicious_content: {
+          original_analyzed_text: c.originalText || ''
+        },
+        behavioral_indicators: {
+          escalation_pathway: c.escalationAnalysis || 'No specific pathway detected.'
+        },
+        risk_factors: c.fullThreats || [],
+        compliance_information: {
+          data_handling: "All analysis performed locally. No PII transmitted to external analytics servers.",
+          retention_advice: "Securely retain this structured file for law enforcement or cybercrime portal integration."
+        },
+        recommendations: {
+          suggested_actions: (c.actionItems && c.actionItems.immediate) ? c.actionItems.immediate : ['Block user and report to platform.']
+        },
+        investigation_summary: `Investigation of ${c.personName || c.displayName || 'Unknown Target'} on ${c.platforms ? c.platforms.join(', ') : 'Unknown'} yielded a ${c.severity} severity rating based on ${c.evidence ? c.evidence.length : 0} pieces of evidence.`,
+        metadata: {
+          exported_by: "SafeSphere Secure Interface",
+          version: "1.0.0",
+          export_type: "Cyber Threat Intelligence JSON Payload"
+        }
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonExport, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", `SafeSphere_CaseFile_${(c.caseNum || 'Report').replace('#', '')}_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+
+      showToast('Case file exported as JSON successfully.');
+    }
+
+    // ----------------------------------------------------------------
+    // MODAL HELPERS
+    // ----------------------------------------------------------------
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal(overlay.id);
+      });
+    });
+
+    // ----------------------------------------------------------------
+    // TOAST NOTIFICATIONS
+    // ----------------------------------------------------------------
+    function showToast(msg, type = 'success', isError = false) {
+      const el = document.getElementById('toastEl');
+      const icon = document.getElementById('toastIcon');
+      const text = document.getElementById('toastMsg');
+
+      if (isError || type === 'error') {
+        icon.textContent = 'error';
+        el.style.background = '#fee2e2';
+        el.style.color = '#991b1b';
+      } else {
+        icon.textContent = 'check_circle';
+        el.style.background = '#111f12';
+        el.style.color = '#edfee9';
+      }
+
+      text.textContent = msg;
+      el.classList.remove('hide');
+      el.classList.add('show');
+
+      setTimeout(() => {
+        el.classList.remove('show');
+        el.classList.add('hide');
+      }, 3000);
+    }
+
+    // ----------------------------------------------------------------
+    // INIT ON PAGE LOAD
+    // ----------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', init);
+
+    // Real-time synchronization with safe.html
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'ss_cases') {
+        cases = JSON.parse(e.newValue || '[]');
+        renderStats();
+        renderCaseList();
+
+        // If a modal is open, update its content or close if case deleted
+        if (currentCaseId && !document.getElementById('caseDetailModal').classList.contains('hidden')) {
+          const c = getCase(currentCaseId);
+          if (c) {
+            const activeTab = document.querySelector('.case-tab-btn.active');
+            if (activeTab) {
+              switchCaseTab(activeTab.dataset.ctab);
+            } else {
+              renderDashboard(c);
+            }
+          } else {
+            closeModal('caseDetailModal');
+          }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

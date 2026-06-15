@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "SafeSphere | Reddit Analyzer",
+  "version": "1.0",
+  "description": "Select text on Reddit to analyze it with SafeSphere for harassment, manipulation, and digital threats.",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.reddit.com/*",
+    "http://127.0.0.1:8080/*",
+    "http://localhost:8080/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "css": ["content.css"],
+      "js": ["content.js"]
+    }
+  ]
+}

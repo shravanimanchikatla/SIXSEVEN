@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Safe Space - SafeSphere</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&amp;family=Source+Serif+4:ital,wght@0,400;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d7e7d3",
+                        "surface": "#edfee9",
+                        "outline": "#737971",
+                        "primary": "#4a654b",
+                        "on-secondary-fixed-variant": "#334c43",
+                        "tertiary-fixed-dim": "#afcdbf",
+                        "outline-variant": "#c3c8bf",
+                        "on-tertiary-fixed": "#042017",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#dcedd9",
+                        "on-surface-variant": "#434841",
+                        "inverse-surface": "#263426",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#e5f5e1",
+                        "on-primary-fixed": "#07200c",
+                        "on-primary-container": "#17311b",
+                        "secondary": "#4b645a",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#111f12",
+                        "surface-dim": "#cedfcb",
+                        "surface-tint": "#4a654b",
+                        "on-secondary-container": "#516a60",
+                        "primary-container": "#7d9a7d",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#d7e7d3",
+                        "surface-bright": "#edfee9",
+                        "secondary-fixed-dim": "#b1cdc1",
+                        "secondary-fixed": "#cde9dd",
+                        "on-primary-fixed-variant": "#334d35",
+                        "tertiary-container": "#7c998c",
+                        "secondary-container": "#cde9dd",
+                        "tertiary-fixed": "#cbe9db",
+                        "background": "#edfee9",
+                        "on-secondary-fixed": "#072019",
+                        "primary-fixed-dim": "#b0ceaf",
+                        "on-tertiary-fixed-variant": "#314c42",
+                        "primary-fixed": "#ccebca",
+                        "on-tertiary-container": "#163027",
+                        "on-error-container": "#93000a",
+                        "on-background": "#111f12",
+                        "inverse-primary": "#b0ceaf",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#e2f3de",
+                        "tertiary": "#496459",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#e8f8e4",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "body-lg": ["Source Serif 4"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-md": ["Source Serif 4"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .texture-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            mix-blend-mode: multiply;
+            pointer-events: none;
+        }
+
+        .ambient-shadow {
+            box-shadow: 0 8px 32px rgba(45, 59, 45, 0.06);
+        }
+
+        /* Step animation */
+        @keyframes stepFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-enter {
+            animation: stepFadeIn 0.4s ease forwards;
+        }
+
+        /* Threat bar animation */
+        @keyframes barGrow {
+            from {
+                width: 0%;
+            }
+
+            to {
+                width: var(--target-width);
+            }
+        }
+
+        .threat-bar {
+            animation: barGrow 0.8s ease forwards;
+        }
+
+        /* Toast */
+        #toastNotification {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #toastNotification.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        #toastNotification.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .accordion-content.open {
+            max-height: 2000px;
+        }
+
+        /* Evidence vault button */
+        #evidenceVaultBtn {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #evidenceVaultBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Severity badge colors */
+        .severity-low {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-color: #6ee7b7;
+        }
+
+        .severity-moderate {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-color: #fcd34d;
+        }
+
+        .severity-high {
+            background-color: #ffedd5;
+            color: #9a3412;
+            border-color: #fdba74;
+        }
+
+        .severity-critical {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface min-h-screen relative overflow-x-hidden antialiased">
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-40"></div>
+    <div class="fixed inset-0 z-0 texture-overlay"></div>
+
+    <!-- Desktop Nav (unchanged) -->
+    <nav
+        class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-md shadow-sm dark:shadow-none hidden md:flex">
+        <div class="flex items-center gap-2">
+            <a href="index.html" style="text-decoration: none; cursor: pointer;">
+                <span class="font-headline-md font-bold text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity" style="font-size: 2.5rem; line-height: 1.2;">SafeSphere</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-6">
+
+
+
+        </div>
+        <div class="flex items-center gap-4 text-primary dark:text-primary-fixed-dim">
+
+        </div>
+    </nav>
+
+    <main
+        class="relative z-10 pt-24 pb-32 md:pt-32 md:pb-48 px-margin-mobile md:px-margin-desktop max-w-[1000px] mx-auto min-h-screen flex flex-col justify-center">
+        <!-- Header (unchanged) -->
+        <header class="text-center mb-12">
+            <div class="w-24 h-24 mx-auto mb-6 opacity-80 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-6xl">shield_with_heart</span>
+            </div>
+            <h1 class="font-headline-xl text-headline-xl text-primary mb-4">Safe Space</h1>
+            <p class="font-body-lg text-body-lg italic text-on-surface-variant max-w-2xl mx-auto">Because everyone
+                deserves a safe harbor in the digital world.</p>
+        </header>
+
+        <!-- Form Card (unchanged structure) -->
+        <div
+            class="bg-surface-container-lowest rounded-2xl p-6 md:p-12 ambient-shadow border border-outline-variant/10 relative overflow-hidden">
+            <div class="absolute inset-0 border border-primary/5 rounded-2xl pointer-events-none"></div>
+            <form id="analysisForm" class="space-y-10 relative z-10">
+                <div>
+                    <label
+                        class="block font-label-md text-label-md text-on-surface uppercase mb-3 tracking-wider text-outline"
+                        for="conversationText">Paste Your Conversation</label>
+                    <div class="relative">
+                        <textarea
+                            class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl p-4 font-body-md text-body-md text-on-surface focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none placeholder:text-outline-variant placeholder:italic bg-opacity-50"
+                            id="conversationText"
+                            placeholder="Paste messages, emails, comments, or conversations here. We'll help you understand what they mean."
+                            rows="6"></textarea>
+                        <div class="absolute bottom-4 right-4 w-2 h-2 rounded-full bg-tertiary-fixed-dim opacity-50">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="h-px bg-outline-variant/20 w-full"></div>
+                    <span
+                        class="font-label-sm text-label-sm text-outline-variant uppercase tracking-widest px-2">OR</span>
+                    <div class="h-px bg-outline-variant/20 w-full"></div>
+                </div>
+
+                <div>
+                    <label
+                        class="block font-label-md text-label-md text-on-surface uppercase mb-3 tracking-wider text-outline">Upload
+                        Screenshots</label>
+                    <div
+                        class="border-2 border-dashed border-outline-variant/40 rounded-xl p-8 text-center bg-surface-container-low/30 hover:bg-surface-container-low/80 transition-colors cursor-pointer group relative">
+                        <input accept="image/*,.pdf"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" id="fileUpload"
+                            multiple="" type="file" />
+                        <div class="flex flex-col items-center justify-center space-y-4 pointer-events-none">
+                            <div
+                                class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container group-hover:scale-110 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-3xl" id="uploadIcon"
+                                    style="font-variation-settings: 'wght' 300;">upload_file</span>
+                            </div>
+                            <div>
+                                <p class="font-body-md text-body-md text-on-surface-variant mb-1 group-hover:text-primary transition-colors"
+                                    id="uploadTitle">Drag and drop files here</p>
+                                <p class="font-label-sm text-label-sm text-outline" id="uploadSubtitle">Upload up to two
+                                    images (screenshots, photos, or documents)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="h-px bg-outline-variant/20 w-full"></div>
+                    <span
+                        class="font-label-sm text-label-sm text-outline-variant uppercase tracking-widest px-2">OR</span>
+                    <div class="h-px bg-outline-variant/20 w-full"></div>
+                </div>
+
+                <div>
+                    <label
+                        class="block font-label-md text-label-md text-on-surface uppercase mb-3 tracking-wider text-outline">Record
+                        Voice</label>
+                    <div
+                        class="border-2 border-dashed border-outline-variant/40 rounded-xl p-8 text-center bg-surface-container-low/30 relative">
+                        <div id="recordUI" class="flex flex-col items-center justify-center space-y-4">
+                            <button type="button" id="recordBtn"
+                                class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:scale-110 transition-transform duration-300 focus:outline-none">
+                                <span class="material-symbols-outlined text-3xl" id="recordIcon"
+                                    style="font-variation-settings: 'FILL' 1;">mic</span>
+                            </button>
+                            <div>
+                                <p class="font-body-md text-body-md text-on-surface-variant mb-1" id="recordTitle">Click
+                                    to start recording</p>
+                                <p class="font-label-sm text-label-sm text-outline" id="recordSubtitle">Max 60 seconds
+                                </p>
+                            </div>
+                        </div>
+                        <div id="playbackUI" class="hidden flex-col items-center justify-center space-y-4">
+                            <audio id="audioPlayback" controls class="w-full max-w-sm"></audio>
+                            <button type="button" id="clearRecordBtn"
+                                class="text-red-500 hover:text-red-700 font-label-sm text-sm uppercase flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">delete</span> Discard Recording
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button
+                        class="w-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-white transition-all duration-300 rounded-xl py-4 font-label-md text-label-md flex items-center justify-center gap-2 group shadow-sm hover:shadow-md"
+                        id="submitBtn" type="submit">
+                        <span class="material-symbols-outlined group-hover:animate-pulse" id="btnIcon"
+                            style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+                        <span id="btnText">Analyze Safely</span>
+                    </button>
+                    <p class="text-center font-label-sm text-label-sm text-outline mt-4">Your data is processed
+                        confidentially and securely.</p>
+                </div>
+            </form>
+
+            <!-- ============================================================
+                 RESULTS SECTION — replaced by the new dashboard below
+                 ============================================================ -->
+            <div id="resultsSection"
+                class="hidden mt-10 pt-10 border-t border-outline-variant/20 relative z-10 space-y-6">
+
+                <!-- STEP SIMULATION UI -->
+                <div id="stepSimulation" class="space-y-3">
+                    <h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined">manage_search</span> Running Analysis
+                    </h3>
+                    <div id="stepsContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- FULL DASHBOARD (shown after steps complete) -->
+                <div id="fullDashboard" class="hidden space-y-6">
+
+                    <!-- Severity Header Badge -->
+                    <div id="severityHeader" class="rounded-xl border-2 p-5 flex items-center gap-4">
+                        <span class="material-symbols-outlined text-3xl" id="severityIcon">shield_with_heart</span>
+                        <div>
+                            <p class="font-label-sm text-label-sm uppercase tracking-widest opacity-70">Threat
+                                Assessment</p>
+                            <p class="font-headline-md text-headline-md font-bold" id="severityLabel">Analyzing…</p>
+                        </div>
+                    </div>
+
+                    <!-- What We Found -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">search</span> What We Found
+                        </h4>
+                        <ul id="foundList" class="space-y-1 font-body-md text-on-surface-variant"></ul>
+                    </div>
+
+                    <!-- Threat Scores Grid -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">bar_chart</span> Threat Detection Scores
+                        </h4>
+                        <div id="threatGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                    </div>
+
+                    <!-- Power Dynamics -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">balance</span> Power Dynamics
+                        </h4>
+                        <ul id="dynamicsList" class="space-y-2 font-body-md text-on-surface-variant"></ul>
+                    </div>
+
+                    <!-- Linguistic & Cultural Context -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20 space-y-4">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">translate</span> Linguistic & Cultural
+                            Analysis
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Language & Pronouns -->
+                            <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/15 space-y-2">
+                                <p class="font-label-md text-label-md text-primary font-semibold">Language & Pronouns
+                                </p>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-label-sm text-label-sm text-outline">Language:</span>
+                                    <span id="culturalLanguage"
+                                        class="font-label-md text-label-md text-on-surface font-semibold bg-surface-container-lowest border border-outline-variant/25 px-2 py-0.5 rounded">Unknown</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="font-label-sm text-label-sm text-outline block">Disrespect
+                                        Level:</span>
+                                    <span id="culturalDisrespectBadge"
+                                        class="inline-block px-3 py-1 text-xs font-bold rounded-lg border">NEUTRAL</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <span class="font-label-sm text-label-sm text-outline block">Pronouns Found:</span>
+                                    <div id="culturalPronounsList" class="flex flex-wrap gap-1.5 pt-1"></div>
+                                </div>
+                            </div>
+
+                            <!-- Tactics Detected -->
+                            <div
+                                class="p-4 rounded-xl bg-surface-container border border-outline-variant/15 space-y-2 flex flex-col">
+                                <p class="font-label-md text-label-md text-primary font-semibold">Indian Cultural
+                                    Tactics</p>
+                                <div id="culturalTacticsList" class="space-y-1.5 flex-grow pt-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Linguistic Explanation -->
+                        <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/15">
+                            <p class="font-label-md text-label-md text-primary font-semibold mb-1">Linguistic Analysis
+                            </p>
+                            <p id="culturalLinguisticExplanation"
+                                class="font-body-md text-on-surface-variant text-sm leading-relaxed"></p>
+                        </div>
+
+                        <!-- Cultural Implications -->
+                        <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/15">
+                            <p class="font-label-md text-label-md text-primary font-semibold mb-1">Social Stigma & Honor
+                                Context</p>
+                            <p id="culturalImplicationsText"
+                                class="font-body-md text-on-surface-variant text-sm leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <!-- Escalation Timeline -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">timeline</span> Escalation Pattern
+                        </h4>
+                        <div id="escalationContent" class="font-body-md text-on-surface-variant"></div>
+                    </div>
+
+                    <!-- Why This Matters -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">info</span> Why This Matters
+                        </h4>
+                        <p id="whyMatters" class="font-body-md text-on-surface-variant leading-relaxed"></p>
+                    </div>
+
+                    <!-- Recommended Resources -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">support</span> Recommended Resources &
+                            Reporting Portals
+                        </h4>
+                        <div id="resourcesList" class="space-y-3 font-body-md text-on-surface-variant">
+                            <!-- Dynamically loaded reporting links -->
+                        </div>
+                    </div>
+
+                    <!-- What To Do -->
+                    <div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/20 space-y-5">
+                        <h4
+                            class="font-label-md text-label-md text-outline uppercase tracking-wider flex items-center gap-2">
+                            <span class="material-symbols-outlined text-base">checklist</span> What To Do NOW
+                        </h4>
+
+                        <div>
+                            <p class="font-label-md text-label-md text-primary mb-2 uppercase tracking-wide">Immediate
+                                Actions</p>
+                            <ul id="immediateActionsList"
+                                class="space-y-1 font-body-md text-on-surface-variant list-none">
+                                <li class="flex items-start gap-2"><span
+                                        class="text-emerald-600 font-bold mt-0.5">•</span> DO NOT PAY or comply with
+                                    demands</li>
+                                <li class="flex items-start gap-2"><span
+                                        class="text-emerald-600 font-bold mt-0.5">•</span> Preserve all evidence — do
+                                    not delete anything</li>
+                                <li class="flex items-start gap-2"><span
+                                        class="text-emerald-600 font-bold mt-0.5">•</span> Screenshot conversations and
+                                    save profile details</li>
+                                <li class="flex items-start gap-2"><span
+                                        class="text-emerald-600 font-bold mt-0.5">•</span> Block further contact on the
+                                    platform</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p class="font-label-md text-label-md text-primary mb-2 uppercase tracking-wide">Next Steps
+                            </p>
+                            <ul id="nextStepsList" class="space-y-1 font-body-md text-on-surface-variant list-none">
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>
+                                    Report to the platform where it occurred</li>
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>
+                                    Save evidence to your Evidence Vault</li>
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>
+                                    Consider reporting to cybercrime authorities</li>
+                                <li class="flex items-start gap-2"><span class="text-blue-500 font-bold mt-0.5">→</span>
+                                    Talk to a trusted person about what happened</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <p class="font-label-md text-label-md text-amber-700 mb-2 uppercase tracking-wide">What To
+                                Avoid</p>
+                            <ul id="whatToAvoidList" class="space-y-1 font-body-md text-on-surface-variant list-none">
+                                <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">✕</span>
+                                    Sending additional content or money</li>
+                                <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">✕</span>
+                                    Engaging emotionally with the sender</li>
+                                <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">✕</span>
+                                    Deleting any evidence</li>
+                                <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">✕</span>
+                                    Confronting the person alone</li>
+                            </ul>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <button id="saveVaultBtn"
+                                class="flex items-center gap-2 bg-primary text-white rounded-xl px-4 py-2 font-label-md text-label-md hover:bg-primary/80 transition-all duration-200 hover:scale-105 shadow-sm">
+                                <span class="material-symbols-outlined text-base">inventory_2</span> Save to Evidence
+                                Vault
+                            </button>
+                            <button id="copyReportBtn"
+                                class="flex items-center gap-2 bg-surface-container border border-outline-variant/30 text-on-surface rounded-xl px-4 py-2 font-label-md text-label-md hover:bg-surface-container-high transition-all duration-200 hover:scale-105 shadow-sm">
+                                <span class="material-symbols-outlined text-base">content_copy</span> Copy Incident
+                                Report
+                            </button>
+
+                        </div>
+
+                        <!-- Agent Architecture Accordion -->
+                        <div class="rounded-xl border border-outline-variant/20 overflow-hidden">
+                            <button
+                                class="accordion-toggle w-full flex items-center justify-between p-5 bg-surface-container-low text-left font-label-md text-label-md text-on-surface uppercase tracking-wider hover:bg-surface-container transition-colors"
+                                data-target="agentAccordion">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">smart_toy</span>
+                                    How SafeSphere Reached This Assessment
+                                </span>
+                                <span
+                                    class="material-symbols-outlined transition-transform duration-300 accordion-chevron">expand_more</span>
+                            </button>
+                            <div class="accordion-content" id="agentAccordion">
+                                <div class="p-5 space-y-4 bg-surface-container-lowest">
+                                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20">
+                                        <p class="font-label-md text-label-md text-primary mb-1">Threat Assessment Agent
+                                        </p>
+                                        <p class="font-body-md text-on-surface-variant text-sm">Text preprocessing ·
+                                            Classification · Context analysis → Threat type + confidence score</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20">
+                                        <p class="font-label-md text-label-md text-primary mb-1">Severity Engine</p>
+                                        <p class="font-body-md text-on-surface-variant text-sm">Explicit threats ·
+                                            Frequency · Vulnerability indicators → Urgency level</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20">
+                                        <p class="font-label-md text-label-md text-primary mb-1">Guidance Engine</p>
+                                        <p class="font-body-md text-on-surface-variant text-sm">Platform inference ·
+                                            Evidence availability · Prior actions → Tailored recommendations</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20">
+                                        <p class="font-label-md text-label-md text-primary mb-1">Evidence Agent</p>
+                                        <p class="font-body-md text-on-surface-variant text-sm">Screenshot capture
+                                            placeholders · Metadata extraction · Case organization · Export support</p>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20">
+                                        <p class="font-label-md text-label-md text-primary mb-1">Pattern Recognition
+                                            Agent</p>
+                                        <p class="font-body-md text-on-surface-variant text-sm">Escalation · Frequency
+                                            changes · Topic shifts · Cross-platform patterns</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy & Trust Accordion -->
+                        <div class="rounded-xl border border-outline-variant/20 overflow-hidden">
+                            <button
+                                class="accordion-toggle w-full flex items-center justify-between p-5 bg-surface-container-low text-left font-label-md text-label-md text-on-surface uppercase tracking-wider hover:bg-surface-container transition-colors"
+                                data-target="privacyAccordion">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">lock</span>
+                                    Privacy & Trust Principles
+                                </span>
+                                <span
+                                    class="material-symbols-outlined transition-transform duration-300 accordion-chevron">expand_more</span>
+                            </button>
+                            <div class="accordion-content" id="privacyAccordion">
+                                <div
+                                    class="p-5 space-y-2 bg-surface-container-lowest font-body-md text-on-surface-variant">
+                                    <p class="flex items-start gap-2"><span class="text-emerald-600 font-bold">✓</span>
+                                        We never share your data without permission.</p>
+                                    <p class="flex items-start gap-2"><span class="text-emerald-600 font-bold">✓</span>
+                                        We evaluate behaviors, not people.</p>
+                                    <p class="flex items-start gap-2"><span class="text-emerald-600 font-bold">✓</span>
+                                        We never assume guilt.</p>
+                                    <p class="flex items-start gap-2"><span class="text-emerald-600 font-bold">✓</span>
+                                        Evidence remains under your control.</p>
+                                    <p class="flex items-start gap-2"><span class="text-emerald-600 font-bold">✓</span>
+                                        You can delete your data anytime.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- end fullDashboard -->
+                </div><!-- end resultsSection -->
+            </div>
+    </main>
+
+    <!-- Mobile Nav (unchanged) -->
+    <nav
+        class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center py-2 px-margin-mobile md:hidden bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/20 rounded-t-xl shadow-[0_-4px_12px_rgba(45,59,45,0.05)]">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-all font-label-sm text-label-sm p-2 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined mb-1">anchor</span> Harbor
+        </a>
+        <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-full px-4 py-1 font-label-sm text-label-sm scale-95 duration-200"
+            href="#">
+            <span class="material-symbols-outlined mb-1"
+                style="font-variation-settings: 'FILL' 1;">shield_with_heart</span> Analysis
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-all font-label-sm text-label-sm p-2 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined mb-1">explore</span> Log
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-all font-label-sm text-label-sm p-2 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined mb-1">person</span> Profile
+        </a>
+    </nav>
+
+
+
+    <!-- Evidence Vault Floating Button -->
+    <button id="evidenceVaultBtn" onclick="window.location.href='evidence.html'"
+        class="fixed bottom-24 right-6 md:bottom-8 z-50 flex items-center gap-2 bg-emerald-600 text-white rounded-full px-5 py-3 shadow-lg font-label-md text-label-md"
+        title="Evidence Vault">
+        <span class="material-symbols-outlined text-base">inventory_2</span>
+        <span>Evidence Vault</span>
+    </button>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification"
+        class="hidden fixed bottom-36 right-6 md:bottom-24 z-[60] bg-on-surface text-surface rounded-xl px-5 py-3 font-label-md text-label-md shadow-xl flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">check_circle</span>
+        <span id="toastMsg">Evidence saved to local vault (demo).</span>
+    </div>
+    <!-- Context Modal -->
+    <div id="contextModal"
+        class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div
+            class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-2xl max-w-lg w-full border border-outline-variant/20">
+            <div id="modalStep1">
+                <h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined">help</span> Additional Context
+                </h3>
+                <p class="font-body-md text-on-surface-variant mb-6">
+                    Providing additional context helps our AI deliver a more accurate and tailored analysis. Do you
+                    consent to answering a few follow-up questions about the situation?
+                </p>
+                <div class="flex justify-end gap-3">
+                    <button id="modalNoBtn"
+                        class="px-5 py-2 rounded-xl border border-outline-variant/40 text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md">
+                        No, analyze now
+                    </button>
+                    <button id="modalYesBtn"
+                        class="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors font-label-md text-label-md">
+                        Yes, I consent
+                    </button>
+                </div>
+            </div>
+
+            <div id="modalStep2" class="hidden space-y-4">
+                <h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined">info</span> Situation Details
+                </h3>
+
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Your Age</label>
+                    <input type="number" id="ctxUserAge"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary"
+                        placeholder="e.g. 15">
+                </div>
+
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Perpetrator's Age
+                        (approx)</label>
+                    <input type="number" id="ctxPerpAge"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary"
+                        placeholder="e.g. 45">
+                </div>
+
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Your Gender</label>
+                    <select id="ctxUserGender"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary">
+                        <option value="">-- Select an option --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="LGBTQ+">LGBTQ+</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">How did you meet this
+                        person?</label>
+                    <select id="ctxRelationship"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary">
+                        <option value="">-- Select an option --</option>
+                        <option value="Family member">Family member</option>
+                        <option value="Family friend">Family friend</option>
+                        <option value="School/Work peer">School/Work peer</option>
+                        <option value="Met online">Met online</option>
+                        <option value="Stranger">Stranger</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">For how long have you been
+                        dealing with this?</label>
+                    <input type="text" id="ctxDuration"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary"
+                        placeholder="e.g. 2 weeks, 6 months">
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6 pt-2">
+                    <button id="modalSkipBtn"
+                        class="px-5 py-2 rounded-xl border border-outline-variant/40 text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md">
+                        Skip
+                    </button>
+                    <button id="modalSubmitCtxBtn"
+                        class="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors font-label-md text-label-md">
+                        Submit Context
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Timeline & Consent Modal -->
+    <div id="timelineModal"
+        class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div
+            class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-2xl max-w-lg w-full border border-outline-variant/20 max-h-[90vh] overflow-y-auto">
+            <h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined">history</span> Incident Timeline
+            </h3>
+            <p class="font-body-md text-on-surface-variant mb-4 text-sm">
+                Before saving or exporting this report, please provide a brief timeline to help document the behavioral
+                patterns over time. This helps create a more comprehensive record.
+            </p>
+
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Approximate Start Date</label>
+                    <input type="date" id="tlStartDate"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Describe the first
+                        incident</label>
+                    <textarea id="tlFirstIncident" rows="2"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary"
+                        placeholder="How did this initially begin?"></textarea>
+                </div>
+                <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface mb-1">Behavioral Escalation</label>
+                    <textarea id="tlEscalation" rows="2"
+                        class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg p-2 font-body-md text-on-surface focus:ring-1 focus:ring-primary"
+                        placeholder="How has their behavior changed or worsened since it started?"></textarea>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low rounded-xl p-4 mb-6 border border-outline-variant/20">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="tlConsentCheck" class="mt-1 rounded text-primary focus:ring-primary">
+                    <span class="text-sm text-on-surface-variant">I consent to saving/exporting this incident report
+                        along with the timeline details I provided. I understand I remain in control of this
+                        data.</span>
+                </label>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button id="tlCancelBtn"
+                    class="px-5 py-2 rounded-xl border border-outline-variant/40 text-on-surface hover:bg-surface-container transition-colors font-label-md text-label-md">
+                    Cancel
+                </button>
+                <button id="tlProceedBtn"
+                    class="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary/90 transition-colors font-label-md text-label-md opacity-50 cursor-not-allowed"
+                    disabled>
+                    Proceed
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // DOM REFERENCES
+        // ============================================================
+        const fileInput = document.getElementById('fileUpload');
+        const dropZone = fileInput.parentElement;
+        const uploadIcon = document.getElementById('uploadIcon');
+        const uploadTitle = document.getElementById('uploadTitle');
+        const uploadSubtitle = document.getElementById('uploadSubtitle');
+        const textarea = document.getElementById('conversationText');
+        const analysisForm = document.getElementById('analysisForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+        const resultsSection = document.getElementById('resultsSection');
+        const stepSimulation = document.getElementById('stepSimulation');
+        const stepsContainer = document.getElementById('stepsContainer');
+        const fullDashboard = document.getElementById('fullDashboard');
+
+        // Dashboard elements
+        const severityHeader = document.getElementById('severityHeader');
+        const severityIcon = document.getElementById('severityIcon');
+        const severityLabel = document.getElementById('severityLabel');
+        const foundList = document.getElementById('foundList');
+        const threatGrid = document.getElementById('threatGrid');
+        const dynamicsList = document.getElementById('dynamicsList');
+        const escalationContent = document.getElementById('escalationContent');
+        const whyMatters = document.getElementById('whyMatters');
+
+        let uploadedFiles = [];
+        let analysisResult = {}; // will hold computed analysis for clipboard
+        let sessionHistory = []; // stores previous interactions
+
+        // ============================================================
+        // FILE UPLOAD (unchanged behaviour)
+        // ============================================================
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                uploadedFiles = Array.from(e.target.files);
+                const count = uploadedFiles.length;
+                uploadTitle.textContent = `${count} file${count > 1 ? 's' : ''} staged for verification`;
+                uploadTitle.classList.add('text-primary');
+                uploadSubtitle.textContent = uploadedFiles.map(f => f.name).join(', ');
+                uploadIcon.textContent = 'check_circle';
+                dropZone.classList.add('border-primary', 'bg-surface-container-low/80');
+                dropZone.classList.remove('border-outline-variant/40');
+            }
+        });
+
+        // ============================================================
+        // VOICE RECORDING LOGIC
+        // ============================================================
+        const recordBtn = document.getElementById('recordBtn');
+        const recordIcon = document.getElementById('recordIcon');
+        const recordTitle = document.getElementById('recordTitle');
+        const recordSubtitle = document.getElementById('recordSubtitle');
+        const recordUI = document.getElementById('recordUI');
+        const playbackUI = document.getElementById('playbackUI');
+        const audioPlayback = document.getElementById('audioPlayback');
+        const clearRecordBtn = document.getElementById('clearRecordBtn');
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let pendingAudioBase64 = null;
+        let recordTimeout;
+
+        recordBtn.addEventListener('click', async () => {
+            if (!isRecording) {
+                // Start Recording
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = e => {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        audioPlayback.src = audioUrl;
+
+                        // Convert blob to base64
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            pendingAudioBase64 = reader.result.split(',')[1];
+                        };
+
+                        recordUI.classList.add('hidden');
+                        playbackUI.classList.remove('hidden');
+                        playbackUI.classList.add('flex');
+
+                        // Stop all tracks to release microphone
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+
+                    // UI changes
+                    recordBtn.classList.replace('bg-red-100', 'bg-red-600');
+                    recordBtn.classList.replace('text-red-600', 'text-white');
+                    recordBtn.classList.add('animate-pulse');
+                    recordIcon.textContent = 'stop';
+                    recordTitle.textContent = 'Recording...';
+                    recordSubtitle.textContent = 'Click to stop';
+
+                    // 60 sec limit
+                    recordTimeout = setTimeout(() => {
+                        if (isRecording) mediaRecorder.stop();
+                        isRecording = false;
+                        resetRecordUI();
+                    }, 60000);
+
+                } catch (err) {
+                    alert('Microphone access denied or not available.');
+                }
+            } else {
+                // Stop Recording
+                mediaRecorder.stop();
+                isRecording = false;
+                clearTimeout(recordTimeout);
+                resetRecordUI();
+            }
+        });
+
+        function resetRecordUI() {
+            recordBtn.classList.replace('bg-red-600', 'bg-red-100');
+            recordBtn.classList.replace('text-white', 'text-red-600');
+            recordBtn.classList.remove('animate-pulse');
+            recordIcon.textContent = 'mic';
+            recordTitle.textContent = 'Click to start recording';
+            recordSubtitle.textContent = 'Max 60 seconds';
+        }
+
+        clearRecordBtn.addEventListener('click', () => {
+            pendingAudioBase64 = null;
+            audioPlayback.src = '';
+            playbackUI.classList.add('hidden');
+            playbackUI.classList.remove('flex');
+            recordUI.classList.remove('hidden');
+        });
+
+        textarea.addEventListener('focus', () => { textarea.parentElement.classList.add('shadow-[0_0_15px_rgba(125,154,125,0.15)]'); });
+        textarea.addEventListener('blur', () => { textarea.parentElement.classList.remove('shadow-[0_0_15px_rgba(125,154,125,0.15)]'); });
+
+        // ============================================================
+        // THREAT DETECTION LOGIC (Feature 4)
+        // ============================================================
+
+        const THREAT_RULES = [
+            {
+                id: 'bullying',
+                label: 'Bullying',
+                keywords: ['loser', 'ugly', 'worthless', 'nobody likes you', 'kill yourself', 'stupid', 'idiot', 'freak', 'pathetic'],
+            },
+            {
+                id: 'harassment',
+                label: 'Harassment',
+                keywords: ['answer me', 'stop ignoring me', 'why won\'t you reply', 'you have to respond', 'i know where you', 'i\'ll find you'],
+            },
+            {
+                id: 'sextortion',
+                label: 'Sextortion',
+                keywords: ['i have your photos', 'pay me', 'send more', "i'll share them", 'everyone will know', 'your pictures', 'leak your', 'expose you'],
+            },
+            {
+                id: 'grooming',
+                label: 'Grooming',
+                keywords: ["don't tell your parents", 'our secret', "you're mature for your age", "they don't understand you", 'special relationship', 'just between us'],
+            },
+            {
+                id: 'manipulation',
+                label: 'Manipulation',
+                keywords: ['if you loved me', 'you owe me', 'after everything i\'ve done', "you're selfish", "you made me do this", "you always do this", "you never"],
+            },
+            {
+                id: 'blackmail',
+                label: 'Blackmail',
+                keywords: ["unless you want everyone to know", "i know what you did", "you wouldn't want that coming out", 'i have proof', 'pay or i\'ll'],
+            },
+            {
+                id: 'impersonation',
+                label: 'Impersonation',
+                keywords: ['fake account', 'pretending to be', 'not who they say', "that's not really them"],
+            },
+            {
+                id: 'doxxing',
+                label: 'Doxxing Threats',
+                keywords: ['your address', 'i know where you live', "i'll post your info", 'your personal info', 'dox you', 'your real name'],
+            },
+        ];
+
+        /**
+         * Analyse text against all threat rules.
+         * Returns array of { id, label, score, matches }
+         */
+        function detectThreats(text) {
+            const lower = text.toLowerCase();
+            return THREAT_RULES.map(rule => {
+                const hits = rule.keywords.filter(kw => lower.includes(kw));
+                let score = 0;
+                if (hits.length >= 2) score = Math.floor(Math.random() * 20) + 80; // 80-100
+                else if (hits.length === 1) score = Math.floor(Math.random() * 30) + 50; // 50-79
+                else score = Math.floor(Math.random() * 20); // 0-19
+                return { id: rule.id, label: rule.label, score, matches: hits };
+            });
+        }
+
+        /**
+         * Determine severity from threat scores.
+         */
+        function computeSeverity(threats) {
+            const maxScore = Math.max(...threats.map(t => t.score));
+            const sextortion = threats.find(t => t.id === 'sextortion');
+            const blackmail = threats.find(t => t.id === 'blackmail');
+            const grooming = threats.find(t => t.id === 'grooming');
+
+            if ((sextortion && sextortion.score >= 70) || (blackmail && blackmail.score >= 80) || maxScore >= 85) {
+                return { level: 'CRITICAL', reason: 'Critical indicators detected — sextortion, blackmail or severe threats present.', css: 'severity-critical', icon: 'emergency', color: '#991b1b' };
+            }
+            if (maxScore >= 60 || (grooming && grooming.score >= 50)) {
+                return { level: 'HIGH', reason: 'Explicit threat patterns or repeated severe pressure language detected.', css: 'severity-high', icon: 'warning', color: '#9a3412' };
+            }
+            if (maxScore >= 30) {
+                return { level: 'MODERATE', reason: 'Manipulation or escalating negative patterns identified.', css: 'severity-moderate', icon: 'info', color: '#92400e' };
+            }
+            return { level: 'LOW', reason: 'Minor conflict or mild rudeness detected. No acute threat indicators.', css: 'severity-low', icon: 'check_circle', color: '#065f46' };
+        }
+
+        /**
+         * Analyse power dynamics from text.
+         */
+        function analysePowerDynamics(text) {
+            const lower = text.toLowerCase();
+            const results = [];
+
+            // Authority
+            if (/\b(boss|manager|teacher|professor|employer|principal|adult|sir|ma'am)\b/.test(lower)) {
+                results.push({ icon: '⚠', text: 'Potential Authority Difference: Employer/authority figure language detected.' });
+            } else if (/\b(minor|kid|child|teenager|teen|young)\b/.test(lower)) {
+                results.push({ icon: '⚠', text: 'Potential Authority Difference: Adult/Minor language indicators present.' });
+            } else {
+                results.push({ icon: '○', text: 'No clear authority imbalance detected.' });
+            }
+
+            // Emotional
+            if (/\b(love|partner|relationship|boyfriend|girlfriend|husband|wife|family|mother|father)\b/.test(lower)) {
+                results.push({ icon: '✓', text: 'Emotional Investment: Romantic or close family relationship language detected.' });
+            } else {
+                results.push({ icon: '○', text: 'No significant emotional dependency indicators found.' });
+            }
+
+            // Financial
+            if (/\b(pay|money|rent|debt|loan|owe|financial|support)\b/.test(lower)) {
+                results.push({ icon: '⚠', text: 'Resource Imbalance: Financial dependency language present.' });
+            } else {
+                results.push({ icon: '○', text: 'No Financial Dependence Indicators Found.' });
+            }
+
+            return results;
+        }
+
+        /**
+         * Generate escalation timeline if enough content exists.
+         */
+        function buildEscalation(text) {
+            const lines = text.split(/\n+/).filter(l => l.trim().length > 0);
+            if (lines.length < 4) {
+                return '<p class="text-on-surface-variant font-body-md italic">Not enough historical context to determine escalation patterns.</p>';
+            }
+
+            const third = Math.floor(lines.length / 3);
+            const chunk1 = lines.slice(0, third).join(' ').toLowerCase();
+            const chunk2 = lines.slice(third, third * 2).join(' ').toLowerCase();
+            const chunk3 = lines.slice(third * 2).join(' ').toLowerCase();
+
+            function chunkLabel(chunk) {
+                if (/kill yourself|pay me|expose|threat|harm|destroy/.test(chunk)) return 'Threats and coercive language emerge.';
+                if (/owe me|if you loved|after everything|you always|you never|guilt/.test(chunk)) return 'Guilt-inducing and manipulative statements appear.';
+                return 'Conversations appear neutral or mixed tone.';
+            }
+
+            return `
+            <div class="space-y-3">
+                ${['Early messages', 'Middle messages', 'Recent messages'].map((label, i) => {
+                const chunks = [chunk1, chunk2, chunk3];
+                return `<div class="flex items-start gap-3">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 rounded-full bg-primary mt-1"></div>
+                            ${i < 2 ? '<div class="w-0.5 h-8 bg-outline-variant/40 mt-1"></div>' : ''}
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-primary">${label}</p>
+                            <p class="font-body-md text-on-surface-variant text-sm">${chunkLabel(chunks[i])}</p>
+                        </div>
+                    </div>`;
+            }).join('')}
+            </div>
+        `;
+        }
+
+        /**
+         * Produce "Why This Matters" explanation based on top threat.
+         */
+        function buildWhyMatters(threats, severity) {
+            const top = [...threats].sort((a, b) => b.score - a.score)[0];
+            const explanations = {
+                sextortion: 'This communication contains coercive behaviors commonly associated with sextortion. These patterns can create urgency and pressure, making it harder to think clearly. Recognizing them early helps preserve evidence and maintain control over next steps.',
+                blackmail: 'Blackmail creates artificial fear designed to make you act quickly without thinking. These tactics are crimes in most jurisdictions. Staying calm and preserving evidence is the most powerful thing you can do right now.',
+                grooming: 'Grooming often feels like genuine care or friendship at first. Secrecy requests and boundary-testing are key early warning signs. Trust your instincts — no healthy relationship requires keeping secrets from people who care about you.',
+                harassment: 'Persistent contact after being ignored or asked to stop is harassment. You have the right to disengage, and the pattern of behavior matters more than individual messages.',
+                manipulation: 'Guilt-based manipulation shifts responsibility to you for someone else\'s behavior. These patterns can erode your confidence over time. Recognizing the tactics helps you respond clearly rather than reactively.',
+                bullying: 'Sustained insults and humiliation are designed to undermine confidence. Documenting the pattern is important — it often escalates without intervention.',
+                impersonation: 'If someone is pretending to be another person, their intent is deception from the start. Anything shared under that assumption may be used against you.',
+                doxxing: 'Publishing private personal information without consent is a serious threat. Documenting and reporting quickly limits potential harm.',
+            };
+            if (top.score < 20) {
+                return 'No strong threat indicators were identified. The communication may contain mild rudeness or conflict but does not appear to involve coercive or harmful intent based on available text. Continue to monitor and reach out if patterns change.';
+            }
+            return explanations[top.id] || 'This communication contains patterns that may indicate harmful intent. Reviewing the findings above and following the recommended steps can help you stay in control of the situation.';
+        }
+
+        // ============================================================
+        // STEP SIMULATION (Feature 1)
+        // ============================================================
+
+        const STEPS = [
+            {
+                label: 'Preprocessing conversation',
+                details: ['Cleaning message content', 'Extracting entities (names, usernames, platforms)', 'Detecting emotional language (fear, anger, urgency)']
+            },
+            {
+                label: 'Threat Type Detection',
+                details: ['Scanning for bullying, harassment, sextortion, grooming', 'Evaluating manipulation, blackmail, impersonation, doxxing', 'Computing confidence scores per category']
+            },
+            {
+                label: 'Severity Assessment',
+                details: ['Evaluating explicit threat level', 'Checking vulnerability indicators', 'Assigning urgency tier: LOW / MODERATE / HIGH / CRITICAL']
+            },
+            {
+                label: 'Power Dynamics Analysis',
+                details: ['Checking status differences (authority, age)', 'Evaluating emotional investment signals', 'Assessing resource imbalance indicators']
+            },
+            {
+                label: 'Escalation Pattern Detection',
+                details: ['Segmenting messages by position in conversation', 'Tracking tone and language shifts', 'Building timeline summary']
+            },
+        ];
+
+        /**
+         * Adds a single step card with animation.
+         */
+        function renderStep(index, status = 'running') {
+            const step = STEPS[index];
+            const el = document.createElement('div');
+            el.className = 'step-enter flex items-start gap-3 bg-surface-container p-3 rounded-xl border border-outline-variant/20';
+            el.innerHTML = `
+            <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${status === 'done' ? 'bg-emerald-100 text-emerald-700' : 'bg-primary-container text-primary'}">
+                <span class="material-symbols-outlined text-sm">${status === 'done' ? 'check' : 'sync'}</span>
+            </div>
+            <div>
+                <p class="font-label-md text-label-md text-on-surface">${step.label}</p>
+                <ul class="mt-1 space-y-0.5">
+                    ${step.details.map(d => `<li class="font-label-sm text-label-sm text-outline">${d}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+            stepsContainer.appendChild(el);
+            return el;
+        }
+
+        /**
+         * Run through steps sequentially then reveal dashboard.
+         */
+        function runStepSimulation(threats, severity, text) {
+            stepsContainer.innerHTML = '';
+            let i = 0;
+
+            function nextStep() {
+                if (i >= STEPS.length) {
+                    // All steps done — mark all as complete and show dashboard
+                    Array.from(stepsContainer.children).forEach(child => {
+                        const icon = child.querySelector('.material-symbols-outlined');
+                        const circle = child.querySelector('.rounded-full');
+                        if (icon) icon.textContent = 'check';
+                        if (circle) {
+                            circle.classList.remove('bg-primary-container', 'text-primary');
+                            circle.classList.add('bg-emerald-100', 'text-emerald-700');
+                        }
+                    });
+
+                    setTimeout(() => {
+                        stepSimulation.classList.add('hidden');
+                        buildDashboard(threats, severity, text);
+                        fullDashboard.classList.remove('hidden');
+                    }, 600);
+                    return;
+                }
+
+                renderStep(i, 'running');
+                i++;
+                setTimeout(nextStep, 900 + Math.random() * 300);
+            }
+
+            nextStep();
+        }
+
+        // ============================================================
+        // DASHBOARD BUILDER (Feature 2)
+        // ============================================================
+
+        function buildDashboard(threats, severity, text, powerDynamics, escalation, whyMattersText, recommendedResources, culturalContext, actionItems) {
+            // Severity badge
+            severityHeader.className = `rounded-xl border-2 p-5 flex items-center gap-4 ${severity.css}`;
+            severityIcon.textContent = severity.icon;
+            severityLabel.textContent = `${severity.level} RISK — ${severity.reason}`;
+
+            // What We Found
+            foundList.innerHTML = '';
+            const activeThreats = threats.filter(t => t.score >= 20);
+            if (activeThreats.length === 0) {
+                foundList.innerHTML = '<li class="flex items-start gap-2"><span class="text-emerald-600">✓</span> No significant threat indicators detected in this text.</li>';
+            } else {
+                activeThreats.sort((a, b) => b.score - a.score).forEach(t => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start gap-2';
+                    li.innerHTML = `<span class="text-red-500 font-bold mt-0.5">✓</span> <span><strong>${t.label}</strong> detected — matched keywords: <em>${t.matches.join(', ') || 'pattern match'}</em></span>`;
+                    foundList.appendChild(li);
+                });
+            }
+
+            // Threat Grid
+            threatGrid.innerHTML = '';
+            threats.forEach(t => {
+                const color = t.score >= 70 ? '#ef4444' : t.score >= 40 ? '#f59e0b' : '#10b981';
+                const bar = document.createElement('div');
+                bar.className = 'space-y-1';
+                bar.innerHTML = `
+                <div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+                    <span>${t.label}</span>
+                    <span class="font-semibold" style="color:${color}">${t.score}%</span>
+                </div>
+                <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+                    <div class="threat-bar h-full rounded-full" style="--target-width:${t.score}%;background-color:${color};width:${t.score}%;"></div>
+                </div>
+            `;
+                threatGrid.appendChild(bar);
+            });
+
+            // Power Dynamics
+            dynamicsList.innerHTML = '';
+            const pdSource = powerDynamics || analysePowerDynamics(text);
+            pdSource.forEach(d => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start gap-2';
+                li.innerHTML = `<span class="font-bold mt-0.5">${d.icon}</span> ${d.text}`;
+                dynamicsList.appendChild(li);
+            });
+
+            // Escalation
+            if (escalation) {
+                escalationContent.innerHTML = `
+                <div class="space-y-3">
+                    ${escalation.map((stage, i) => `
+                        <div class="flex items-start gap-3">
+                            <div class="flex flex-col items-center">
+                                <div class="w-3 h-3 rounded-full bg-primary mt-1"></div>
+                                ${i < 2 ? '<div class="w-0.5 h-8 bg-outline-variant/40 mt-1"></div>' : ''}
+                            </div>
+                            <div>
+                                <p class="font-label-md text-label-md text-primary">${stage.phase}</p>
+                                <p class="font-body-md text-on-surface-variant text-sm">${stage.summary}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            } else {
+                escalationContent.innerHTML = buildEscalation(text);
+            }
+
+            // Why This Matters
+            whyMatters.textContent = whyMattersText || buildWhyMatters(threats, severity);
+
+            // Linguistic & Cultural Context Fallback
+            const culturalContextData = culturalContext || {
+                detectedLanguage: "English (Simulated)",
+                pronounAnalysis: {
+                    pronounsUsed: text.toLowerCase().includes("tu ") || text.toLowerCase().includes(" tu") ? ["tu"] : ["you"],
+                    disrespectLevel: text.toLowerCase().includes("tu ") || text.toLowerCase().includes(" tu") ? "HIGH_DISRESPECT" : "NEUTRAL",
+                    explanation: text.toLowerCase().includes("tu ") || text.toLowerCase().includes(" tu") ? "The informal pronoun 'tu' was detected. In Hindi/Hinglish, aggressively addressing someone with 'tu' rather than the formal 'aap' is a common tool to establish social hierarchy or dominance." : "Standard pronouns used. Pronoun analysis did not detect specific disrespect markers."
+                },
+                tacticsDetected: [
+                    text.toLowerCase().includes("secret") || text.toLowerCase().includes("kisi ko") ? "Secrecy demands" : null,
+                    text.toLowerCase().includes("home") || text.toLowerCase().includes("ghar") || text.toLowerCase().includes("parents") ? "Honor-based threats" : null
+                ].filter(Boolean),
+                culturalImplications: "Simulated scan results. To obtain a deep cultural nuance evaluation (e.g. honor threats, family stigma analysis), make sure your Gemini and Sarvam API credentials are fully configured."
+            };
+
+            // Bind Cultural Context DOM
+            const culturalLanguageEl = document.getElementById('culturalLanguage');
+            if (culturalLanguageEl) {
+                culturalLanguageEl.textContent = culturalContextData.detectedLanguage || 'Hinglish';
+            }
+
+            const badge = document.getElementById('culturalDisrespectBadge');
+            if (badge) {
+                const level = culturalContextData.pronounAnalysis.disrespectLevel;
+                badge.textContent = level.replace('_', ' ');
+                badge.className = 'inline-block px-3 py-1 text-xs font-bold rounded-lg border ';
+                if (level === 'HIGH_DISRESPECT') {
+                    badge.className += 'bg-red-50 text-red-700 border-red-200';
+                } else if (level === 'CASUAL_DISRESPECT') {
+                    badge.className += 'bg-amber-50 text-amber-700 border-amber-200';
+                } else if (level === 'RESPECTFUL') {
+                    badge.className += 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                } else {
+                    badge.className += 'bg-slate-50 text-slate-700 border-slate-200';
+                }
+            }
+
+            const pronounsContainer = document.getElementById('culturalPronounsList');
+            if (pronounsContainer) {
+                pronounsContainer.innerHTML = '';
+                const pronouns = culturalContextData.pronounAnalysis.pronounsUsed || [];
+                if (pronouns.length === 0) {
+                    pronounsContainer.innerHTML = '<span class="text-xs italic text-outline">None identified</span>';
+                } else {
+                    pronouns.forEach(p => {
+                        const span = document.createElement('span');
+                        span.className = 'px-2 py-0.5 text-xs rounded bg-surface-container-lowest border border-outline-variant/30 text-on-surface';
+                        span.textContent = p;
+                        pronounsContainer.appendChild(span);
+                    });
+                }
+            }
+
+            const tacticsContainer = document.getElementById('culturalTacticsList');
+            if (tacticsContainer) {
+                tacticsContainer.innerHTML = '';
+                const tactics = culturalContextData.tacticsDetected || [];
+                if (tactics.length === 0) {
+                    tacticsContainer.innerHTML = '<div class="text-sm italic text-outline flex items-center gap-1"><span class="material-symbols-outlined text-sm">check_circle</span> No boundary-crossing cultural tactics flagged.</div>';
+                } else {
+                    tactics.forEach(t => {
+                        const item = document.createElement('div');
+                        item.className = 'text-sm text-red-700 font-medium flex items-center gap-1.5';
+                        item.innerHTML = `<span class="material-symbols-outlined text-base text-red-600">warning</span> ${t}`;
+                        tacticsContainer.appendChild(item);
+                    });
+                }
+            }
+
+            const linguisticExp = document.getElementById('culturalLinguisticExplanation');
+            if (linguisticExp) {
+                linguisticExp.textContent = culturalContextData.pronounAnalysis.explanation;
+            }
+
+            const implications = document.getElementById('culturalImplicationsText');
+            if (implications) {
+                implications.textContent = culturalContextData.culturalImplications;
+            }
+
+            // Recommended Resources
+            const resourcesList = document.getElementById('resourcesList');
+            if (resourcesList) {
+                resourcesList.innerHTML = '';
+                const list = recommendedResources || [
+                    {
+                        name: "National Cyber Crime Reporting Portal (India)",
+                        url: "https://www.cybercrime.gov.in/",
+                        description: "Official Government of India platform for reporting cyberbullying, stalking, impersonation, blackmail, etc."
+                    },
+                    {
+                        name: "Internet Matters — Report Harmful Content",
+                        url: "https://reportharmfulcontent.com/",
+                        description: "Provides guidance on reporting online abuse and harmful content across different platforms."
+                    }
+                ];
+
+                list.forEach(res => {
+                    const card = document.createElement('div');
+                    card.className = 'p-4 rounded-lg bg-surface-container border border-outline-variant/15 flex justify-between items-start gap-4 hover:border-primary/30 transition-all';
+                    card.innerHTML = `
+                    <div class="space-y-1">
+                        <p class="font-label-md text-label-md text-primary font-semibold">${res.name}</p>
+                        <p class="font-body-md text-on-surface-variant text-sm">${res.description}</p>
+                    </div>
+                    <a href="${res.url}" target="_blank" rel="noopener" class="flex items-center gap-1 text-primary hover:text-primary-container font-label-sm text-label-sm border border-primary/20 rounded-lg px-3 py-1.5 bg-surface-container-lowest shadow-sm hover:shadow transition-all shrink-0">
+                        <span>Visit Site</span>
+                        <span class="material-symbols-outlined text-xs">open_in_new</span>
+                    </a>
+                `;
+                    resourcesList.appendChild(card);
+                });
+            }
+
+            // Store result for clipboard
+            analysisResult = { threats, severity, text };
+
+            // Dynamic Action Items
+            if (actionItems) {
+                const buildList = (containerId, items, iconHtml) => {
+                    const el = document.getElementById(containerId);
+                    if (el && items && items.length > 0) {
+                        el.innerHTML = '';
+                        items.forEach(item => {
+                            const li = document.createElement('li');
+                            li.className = 'flex items-start gap-2';
+                            li.innerHTML = `${iconHtml} <span>${item}</span>`;
+                            el.appendChild(li);
+                        });
+                    }
+                };
+
+                buildList('immediateActionsList', actionItems.immediateActions, '<span class="text-emerald-600 font-bold mt-0.5">•</span>');
+                buildList('nextStepsList', actionItems.nextSteps, '<span class="text-blue-500 font-bold mt-0.5">→</span>');
+                buildList('whatToAvoidList', actionItems.whatToAvoid, '<span class="text-red-500 font-bold mt-0.5">✕</span>');
+            }
+        }
+
+        // ============================================================
+        // FORM SUBMIT
+        // ============================================================
+
+        // ============================================================
+        // CONTEXT MODAL & FORM SUBMIT
+        // ============================================================
+        const contextModal = document.getElementById('contextModal');
+        const modalStep1 = document.getElementById('modalStep1');
+        const modalStep2 = document.getElementById('modalStep2');
+
+        let pendingTextValue = '';
+        let pendingImagesBase64 = [];
+
+        function closeContextModal() {
+            contextModal.classList.add('hidden');
+            modalStep1.classList.remove('hidden');
+            modalStep2.classList.add('hidden');
+        }
+
+        function resizeAndCompressImage(file, maxDimension = 1000) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(img.src);
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Calculate new dimensions
+                    if (width > height) {
+                        if (width > maxDimension) {
+                            height = Math.round((height * maxDimension) / width);
+                            width = maxDimension;
+                        }
+                    } else {
+                        if (height > maxDimension) {
+                            width = Math.round((width * maxDimension) / height);
+                            height = maxDimension;
+                        }
+                    }
+
+                    // Draw to canvas
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Export as compressed JPEG
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // 70% quality JPEG
+                    const data = compressedBase64.split(',')[1];
+                    resolve({
+                        mime_type: 'image/jpeg',
+                        data: data
+                    });
+                };
+                img.onerror = (err) => reject(err);
+            });
+        }
+
+        analysisForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            pendingTextValue = textarea.value.trim();
+            if (!pendingTextValue && uploadedFiles.length === 0 && !pendingAudioBase64) {
+                alert('Please paste text communications, drop file assets, or record voice to run analysis safeties.');
+                return;
+            }
+
+            // Show Modal Step 1
+            contextModal.classList.remove('hidden');
+            modalStep1.classList.remove('hidden');
+            modalStep2.classList.add('hidden');
+
+            // Process and compress images to base64 in background
+            const imagePromises = uploadedFiles.map(file => {
+                if (file.type.startsWith('image/')) {
+                    return resizeAndCompressImage(file, 1000);
+                } else {
+                    // If it's a PDF or other file type, fallback to standard reader
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            resolve({
+                                mime_type: file.type,
+                                data: reader.result.split(',')[1]
+                            });
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
+            pendingImagesBase64 = await Promise.all(imagePromises);
+        });
+
+        document.getElementById('modalNoBtn').addEventListener('click', () => {
+            closeContextModal();
+            startAnalysis(null);
+        });
+
+        document.getElementById('modalYesBtn').addEventListener('click', () => {
+            modalStep1.classList.add('hidden');
+            modalStep2.classList.remove('hidden');
+        });
+
+        document.getElementById('modalSkipBtn').addEventListener('click', () => {
+            closeContextModal();
+            startAnalysis(null);
+        });
+
+        document.getElementById('modalSubmitCtxBtn').addEventListener('click', () => {
+            const userContext = {
+                userAge: document.getElementById('ctxUserAge').value,
+                perpAge: document.getElementById('ctxPerpAge').value,
+                userGender: document.getElementById('ctxUserGender').value,
+                relationship: document.getElementById('ctxRelationship').value,
+                duration: document.getElementById('ctxDuration').value
+            };
+            closeContextModal();
+            startAnalysis(userContext);
+        });
+
+        function startAnalysis(userContext) {
+            // Loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Running Analysis Spheres…';
+            btnIcon.textContent = 'sync';
+            btnIcon.classList.add('animate-spin');
+
+            // Reset
+            fullDashboard.classList.add('hidden');
+            stepSimulation.classList.remove('hidden');
+            stepsContainer.innerHTML = '';
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Prepare final payload
+            const requestPayload = {
+                text: pendingTextValue,
+                images: pendingImagesBase64,
+                audio: pendingAudioBase64,
+                history: sessionHistory,
+                context: userContext
+            };
+
+            // Backend API Fetch Variables
+            let apiSuccess = false;
+            let apiResult = null;
+            let apiErrorMsg = null;
+            let isApiKeyMissing = false;
+
+            // Query Flask server `/api/analyze`
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestPayload)
+            })
+                .then(async (response) => {
+                    const data = await response.json();
+                    if (response.ok) {
+                        apiSuccess = true;
+                        apiResult = data;
+                    } else {
+                        apiSuccess = false;
+                        apiErrorMsg = data.error || 'Backend threat analysis failed.';
+                        if (data.code === 'API_KEY_MISSING') {
+                            isApiKeyMissing = true;
+                        }
+                    }
+                })
+                .catch((err) => {
+                    apiSuccess = false;
+                    apiErrorMsg = err.message || 'Network error occurred connecting to backend.';
+                });
+
+            // Trigger sequential visual check steps (approx 5.5s total)
+            let stepIndex = 0;
+            function runVisualStep() {
+                if (stepIndex >= STEPS.length) {
+                    waitForApiAndFinish();
+                    return;
+                }
+                renderStep(stepIndex, 'running');
+                stepIndex++;
+                setTimeout(runVisualStep, 900 + Math.random() * 300);
+            }
+
+            function waitForApiAndFinish() {
+                if (apiResult !== null || apiErrorMsg !== null) {
+                    completeAnalysis();
+                } else {
+                    // Poll check every 250ms until backend replies
+                    setTimeout(waitForApiAndFinish, 250);
+                }
+            }
+
+            function runSimulatedFallback() {
+                // Compute simulated rule-based metrics locally
+                const payload = pendingTextValue + ' ' + uploadedFiles.map(f => f.name).join(' ');
+                const fallbackThreats = detectThreats(payload);
+                const fallbackSeverity = computeSeverity(fallbackThreats);
+
+                // Re-render steps Container as done
+                stepsContainer.innerHTML = '';
+                STEPS.forEach((step, idx) => renderStep(idx, 'done'));
+
+                setTimeout(() => {
+                    stepSimulation.classList.add('hidden');
+                    buildDashboard(fallbackThreats, fallbackSeverity, pendingTextValue || payload);
+                    fullDashboard.classList.remove('hidden');
+
+                    // Restore submit button
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Analyze Safely';
+                    btnIcon.textContent = 'shield_with_heart';
+                    btnIcon.classList.remove('animate-spin');
+                    showToast('API Key missing. Displaying rule-based simulated results.');
+                }, 600);
+            }
+
+            function completeAnalysis() {
+                if (apiSuccess && apiResult) {
+                    // Mark all list steps as check complete
+                    Array.from(stepsContainer.children).forEach(child => {
+                        const icon = child.querySelector('.material-symbols-outlined');
+                        const circle = child.querySelector('.rounded-full');
+                        if (icon) icon.textContent = 'check';
+                        if (circle) {
+                            circle.classList.remove('bg-primary-container', 'text-primary');
+                            circle.classList.add('bg-emerald-100', 'text-emerald-700');
+                        }
+                    });
+
+                    setTimeout(() => {
+                        stepSimulation.classList.add('hidden');
+
+                        const { threats, severity, powerDynamics, escalation, whyMatters, recommendedResources, culturalContext, actionItems } = apiResult;
+
+                        // Compute design classes client-side based on returned risk levels
+                        const sevLevel = severity.level.toUpperCase();
+                        const cssMap = { CRITICAL: 'severity-critical', HIGH: 'severity-high', MODERATE: 'severity-moderate', LOW: 'severity-low' };
+                        const iconMap = { CRITICAL: 'emergency', HIGH: 'warning', MODERATE: 'info', LOW: 'check_circle' };
+                        severity.css = cssMap[sevLevel] || 'severity-low';
+                        severity.icon = iconMap[sevLevel] || 'check_circle';
+
+                        // Save to session history
+                        sessionHistory.push({
+                            text: pendingTextValue,
+                            images: pendingImagesBase64
+                        });
+
+                        buildDashboard(threats, severity, pendingTextValue, powerDynamics, escalation, whyMatters, recommendedResources, culturalContext, actionItems);
+                        fullDashboard.classList.remove('hidden');
+
+                        // Restore submit button
+                        submitBtn.disabled = false;
+                        btnText.textContent = 'Analyze Safely';
+                        btnIcon.textContent = 'shield_with_heart';
+                        btnIcon.classList.remove('animate-spin');
+                    }, 600);
+                } else {
+                    // Fix UI hang: hide the step simulation if it fails
+                    stepSimulation.classList.add('hidden');
+
+                    const confirmSimulate = confirm(
+                        "AI Analysis Error:\n" +
+                        apiErrorMsg + "\n\n" +
+                        "Would you like to run the simulated rule-based keyword scan instead?"
+                    );
+                    if (confirmSimulate) {
+                        runSimulatedFallback();
+                        return;
+                    }
+
+                    // Normal failure reset
+                    resultsSection.classList.add('hidden');
+                    alert('Analysis failed: ' + apiErrorMsg);
+
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Analyze Safely';
+                    btnIcon.textContent = 'shield_with_heart';
+                    btnIcon.classList.remove('animate-spin');
+                }
+            }
+
+            runVisualStep();
+        }
+
+        // ============================================================
+        // ACTION BUTTONS
+        // ============================================================
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 3000);
+        }
+
+        let pendingAction = null; // 'save' or 'copy'
+
+        document.getElementById('saveVaultBtn').addEventListener('click', () => {
+            if (!analysisResult.threats) return;
+            pendingAction = 'save';
+            document.getElementById('timelineModal').classList.remove('hidden');
+        });
+
+        document.getElementById('copyReportBtn').addEventListener('click', () => {
+            if (!analysisResult.threats) return;
+            pendingAction = 'copy';
+            document.getElementById('timelineModal').classList.remove('hidden');
+        });
+
+        const tlConsentCheck = document.getElementById('tlConsentCheck');
+        const tlProceedBtn = document.getElementById('tlProceedBtn');
+        const tlCancelBtn = document.getElementById('tlCancelBtn');
+
+        tlConsentCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                tlProceedBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                tlProceedBtn.disabled = false;
+            } else {
+                tlProceedBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                tlProceedBtn.disabled = true;
+            }
+        });
+
+        tlCancelBtn.addEventListener('click', () => {
+            document.getElementById('timelineModal').classList.add('hidden');
+            tlConsentCheck.checked = false;
+            tlProceedBtn.disabled = true;
+        });
+
+        function generateReportMarkdown(timelineObj) {
+            const { threats, severity, text } = analysisResult;
+            let md = `# SafeSphere Incident Report\n\n`;
+            md += `**Date Generated**: ${new Date().toISOString().split('T')[0]}\n`;
+            md += `**Severity**: ${severity.level}\n`;
+            md += `**Reason**: ${severity.reason}\n\n`;
+            md += `## Threat Scores\n`;
+            threats.forEach(t => md += `- **${t.label}**: ${t.score}%\n`);
+            md += `\n## Incident Timeline\n`;
+            md += `- **Approximate Start Date**: ${timelineObj.startDate || 'Not provided'}\n`;
+            md += `- **First Incident**: ${timelineObj.firstIncident || 'Not provided'}\n`;
+            md += `- **Behavioral Escalation**: ${timelineObj.escalation || 'Not provided'}\n\n`;
+            md += `## Analyzed Text/Context\n\`\`\`\n${text.substring(0, 1000)}${text.length > 1000 ? '...' : ''}\n\`\`\`\n`;
+            return md;
+        }
+
+        function generatePDFReport(c) {
+            const printDiv = document.createElement('div');
+            printDiv.style.cssText = 'position:absolute;left:-9999px;top:0;width:900px;padding:50px;font-family:Arial,sans-serif;color:#111f12;background:#ffffff;font-size:12px;line-height:1.6;';
+
+            const sevColor = c.severity === 'CRITICAL' ? '#991b1b' : c.severity === 'HIGH' ? '#9a3412' : c.severity === 'MODERATE' ? '#92400e' : '#065f46';
+            const sevBgColor = c.severity === 'CRITICAL' ? '#fee2e2' : c.severity === 'HIGH' ? '#ffedd5' : c.severity === 'MODERATE' ? '#fef3c7' : '#d1fae5';
+
+            const evHtml = c.evidence && c.evidence.length
+                ? c.evidence.map(ev => `<tr style="border-bottom:1px solid #e5e7eb;"><td style="padding:10px;font-weight:600;color:#4a654b;">${ev.date || '—'}</td><td style="padding:10px;">${ev.type || '—'}</td><td style="padding:10px;">${ev.platform || '—'}</td><td style="padding:10px;">${ev.desc || '—'}</td><td style="padding:10px;"><span style="background:${ev.verified === 'Verified' ? '#d1fae5' : '#f3f4f6'};padding:4px 8px;border-radius:4px;font-size:11px;">${ev.verified}</span></td></tr>`).join('')
+                : '<tr><td colspan="5" style="padding:12px;color:#888;font-style:italic;text-align:center;">No evidence items recorded.</td></tr>';
+
+            const tlHtml = c.timeline && c.timeline.length
+                ? [...c.timeline].sort((a, b) => (a.date || '').localeCompare(b.date || '')).map(ev => `
+              <div style="border-left:4px solid #4a654b; padding:12px 16px; margin-bottom:12px; background:#f9fbf9; border-radius:0 6px 6px 0;">
+                <p style="margin:0 0 4px 0;font-weight:700;font-size:13px;color:#111f12;">${ev.date || '—'} — ${ev.type || '—'} <span style="background:${sevBgColor};color:${sevColor};border-radius:4px;padding:3px 8px;font-size:11px;margin-left:8px;font-weight:600;">${ev.risk || '—'}</span></p>
+                <p style="margin:0;font-size:12px;color:#434841;">${ev.summary || '—'}</p>
+              </div>`).join('')
+                : '<p style="color:#888;font-style:italic;">No timeline events recorded.</p>';
+
+            printDiv.innerHTML = `
+          <!-- Header -->
+          <div style="border-bottom:4px solid #1a365d; padding-bottom:20px; margin-bottom:30px;">
+            <h1 style="margin:0 0 10px 0; color:#1a365d; font-size:28px; font-weight:800; text-transform:uppercase;">SafeSphere AI Threat Intelligence & Evidence Report</h1>
+            <p style="margin:0; color:#4a5568; font-size:12px; font-weight:bold; letter-spacing:1px;">CONFIDENTIAL CYBER THREAT INVESTIGATION</p>
+          </div>
+
+          <!-- Case Summary Card -->
+          <div style="background:#f7fafc; border-left:6px solid #2b6cb0; padding:20px; margin-bottom:30px; border-radius:4px;">
+            <h2 style="margin:0 0 15px 0; font-size:18px; color:#2d3748; font-weight:700; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">Case Summary</h2>
+            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+              <tr><td style="padding:6px 0; width:200px; font-weight:600; color:#4a5568;">Report ID</td><td style="padding:6px 0; color:#1a202c;">${c.id}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Generation Timestamp</td><td style="padding:6px 0; color:#1a202c;">${new Date().toLocaleString()}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Platform Name / Source</td><td style="padding:6px 0; color:#1a202c;">${(c.platforms || []).join(', ') || 'Not specified'}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Conversation / Case ID</td><td style="padding:6px 0; color:#1a202c;">${c.caseNum}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Case Status</td><td style="padding:6px 0; color:#1a202c; text-transform:uppercase; font-weight:700;">${c.status}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Messages/Items Analyzed</td><td style="padding:6px 0; color:#1a202c;">${c.originalText ? c.originalText.split('\\n').length : 'N/A'}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:600; color:#4a5568;">Analysis Duration</td><td style="padding:6px 0; color:#1a202c;">Real-time AI Processing</td></tr>
+            </table>
+          </div>
+
+          <!-- Threat Detection Results & Severity Assessment -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Threat Detection Results & Severity Assessment</h2>
+          <div style="margin-bottom:30px;">
+            <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:15px;">
+              <tr style="background:#edf2f7;"><td style="padding:8px; width:200px; font-weight:600;">Overall Severity Level</td><td style="padding:8px; color:${sevColor}; font-weight:800; text-transform:uppercase;">${c.severity}</td></tr>
+              <tr><td style="padding:8px; font-weight:600;">AI Threat Explanation</td><td style="padding:8px;">${c.reason || 'Insufficient data to explain severity.'}</td></tr>
+            </table>
+            <div style="background:#fffaf0; border:1px solid #feebc8; padding:15px; border-radius:4px; font-size:12px;">
+              <p style="margin:0 0 8px 0; font-weight:bold; color:#c05621;">Detected Threat Categories & Confidence Scores:</p>
+              <ul style="margin:0; padding-left:20px; color:#7b341e;">
+                ${c.fullThreats ? c.fullThreats.map(t => `<li style="margin-bottom:4px;"><strong>${t.label}</strong>: ${t.score}% confidence</li>`).join('') : `<li>${c.threats.join(', ')}</li>`}
+              </ul>
+            </div>
+            <div style="margin-top:15px; font-size:12px; line-height:1.6; color:#2d3748;">
+              <p style="font-weight:bold; margin-bottom:5px;">Severity Assessment & Contributing Factors:</p>
+              <p style="margin:0;">${c.whyMatters || 'Analysis identified warning signs based on behavioral progression and language used. Refer to the timeline for specific escalation points.'}</p>
+            </div>
+          </div>
+
+          <!-- Evidence Preservation -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Evidence Preservation</h2>
+          <table style="width:100%; border-collapse:collapse; margin-bottom:30px; font-size:11px;">
+            <thead><tr style="background:#2b6cb0; color:white;">
+              <th style="padding:10px; text-align:left; font-weight:700; border-right:1px solid #2c5282;">Date/Time</th>
+              <th style="padding:10px; text-align:left; font-weight:700; border-right:1px solid #2c5282;">Sender Info / Type</th>
+              <th style="padding:10px; text-align:left; font-weight:700; border-right:1px solid #2c5282;">Platform</th>
+              <th style="padding:10px; text-align:left; font-weight:700; border-right:1px solid #2c5282;">Description / Content</th>
+              <th style="padding:10px; text-align:left; font-weight:700;">Preservation Status</th>
+            </tr></thead>
+            <tbody style="color:#2d3748;">
+              ${evHtml}
+            </tbody>
+          </table>
+
+          <!-- Evidence Timeline -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Chronological Evidence Timeline</h2>
+          <div style="margin-bottom:30px; font-size:12px;">
+            ${tlHtml}
+          </div>
+
+          <!-- Threat Classification & Pattern Analysis -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Threat Classification & Pattern Analysis</h2>
+          <div style="margin-bottom:30px; font-size:12px; line-height:1.6; color:#2d3748;">
+            <p style="margin:0 0 10px 0;"><strong>Primary Threat:</strong> ${c.threats[0] || 'Unclassified'}</p>
+            <p style="margin:0 0 15px 0;"><strong>Secondary Threats & Taxonomy:</strong> ${c.threats.slice(1).join(', ') || 'None identified'}</p>
+            
+            <div style="background:#f7fafc; padding:15px; border-radius:4px; margin-bottom:15px;">
+              <p style="margin:0 0 8px 0; font-weight:bold;">Behavioral Trends & Coercion Patterns (Power Dynamics):</p>
+              <ul style="margin:0; padding-left:20px;">
+                ${c.powerDynamics ? c.powerDynamics.map(p => `<li style="margin-bottom:4px;">${p}</li>`).join('') : '<li>No specific power dynamics detected.</li>'}
+              </ul>
+            </div>
+
+            <div style="background:#f7fafc; padding:15px; border-radius:4px;">
+              <p style="margin:0 0 8px 0; font-weight:bold;">Escalation & Progression Analysis:</p>
+              <p style="margin:0;">${c.escalationAnalysis || (c.timeline && c.timeline.length >= 3 ? 'Interaction shows progressive boundary testing over time.' : 'Insufficient data to map full escalation pathway.')}</p>
+            </div>
+          </div>
+
+          <!-- Platform Details & Results Display -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Platform Details & Extracted Results</h2>
+          <div style="margin-bottom:30px; font-size:12px;">
+            <table style="width:100%; border-collapse:collapse; margin-bottom:15px;">
+              <tr><td style="padding:6px 0; width:150px; font-weight:bold;">Target Platform(s)</td><td>${c.platforms.join(', ')}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:bold;">User Identifiers</td><td>${c.personName || c.displayName || c.alias || 'Unknown Target'}</td></tr>
+              <tr><td style="padding:6px 0; font-weight:bold;">Known Relationship</td><td>${c.relationship || 'Unspecified'}</td></tr>
+            </table>
+            
+            <p style="font-weight:bold; margin-bottom:8px;">Original Context / Analyzed Source Material (Snippet):</p>
+            <div style="background:#edf2f7; padding:15px; border-radius:4px; white-space:pre-wrap; font-family:monospace; font-size:11px; max-height:250px; overflow:hidden; color:#4a5568;">
+              ${c.originalText ? (c.originalText.substring(0, 1500) + (c.originalText.length > 1500 ? '\\n...[TRUNCATED FOR REPORT]...' : '')) : 'No raw text preserved in case record.'}
+            </div>
+          </div>
+
+          <!-- Recommendations & Suggested Actions -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">AI-Generated Recommendations & Suggested Actions</h2>
+          <div style="background:#e6fffa; border:1px solid #b2f5ea; padding:15px; border-radius:4px; margin-bottom:30px; font-size:12px; color:#234e52;">
+            <ul style="margin:0; padding-left:20px; line-height:1.6;">
+              ${(c.actionItems && c.actionItems.immediate && c.actionItems.immediate.length > 0)
+                    ? c.actionItems.immediate.map(a => `<li style="margin-bottom:6px; font-weight:600;">${a}</li>`).join('')
+                    : '<li>Block users exhibiting threatening behavior.</li><li>Do not delete messages—preserve all evidence.</li><li>Report to platform safety center immediately.</li>'}
+            </ul>
+          </div>
+
+          <!-- Data Usage, Compliance & Overall Risk -->
+          <h2 style="color:#2d3748; font-size:16px; font-weight:700; border-bottom:2px solid #cbd5e0; padding-bottom:5px; margin-bottom:15px; text-transform:uppercase;">Overall Risk Assessment & Compliance</h2>
+          <div style="background:#f7fafc; padding:20px; border-radius:4px; font-size:12px; line-height:1.6; border-top:4px solid #1a365d;">
+            <p style="margin:0 0 10px 0;"><strong>Final Threat Score & Severity:</strong> <span style="color:${sevColor}; font-weight:bold;">${c.severity}</span></p>
+            <p style="margin:0 0 10px 0;"><strong>Investigation Summary:</strong> ${c.evidence && c.evidence.length ? c.evidence.length : 0} evidence artifacts and ${c.timeline && c.timeline.length ? c.timeline.length : 0} timeline events preserved. Immediate mitigation steps are recommended.</p>
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;" />
+            <p style="margin:0; color:#718096; font-size:10px; font-style:italic;">Data Usage & Regulatory Compliance: This report has been generated securely via SafeSphere. Personally identifiable information (PII), if present, is maintained entirely locally in your secure vault environment. No evidence is transmitted to or retained by external analytics servers. Please securely retain this document for law enforcement, legal counsel, or cybercrime portal submission.</p>
+          </div>
+        `;
+
+            document.body.appendChild(printDiv);
+
+            const opt = {
+                margin: 10,
+                filename: `SafeSphere_Report_${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(printDiv).save().then(() => {
+                document.body.removeChild(printDiv);
+                showToast('Report downloaded as PDF and saved to Evidence Vault.');
+            });
+        }
+
+        tlProceedBtn.addEventListener('click', () => {
+            const timelineObj = {
+                startDate: document.getElementById('tlStartDate').value,
+                firstIncident: document.getElementById('tlFirstIncident').value.trim(),
+                escalation: document.getElementById('tlEscalation').value.trim()
+            };
+
+            const markdownText = generateReportMarkdown(timelineObj);
+
+            if (pendingAction === 'copy') {
+                navigator.clipboard.writeText(markdownText).then(() => {
+                    showToast('Report and timeline copied to clipboard.');
+                }).catch(() => {
+                    showToast('Copy failed — please use Ctrl+C manually.');
+                });
+            } else if (pendingAction === 'save') {
+                // Save to localStorage
+                const STORAGE_KEY = 'ss_cases';
+                const stored = localStorage.getItem(STORAGE_KEY);
+                let cases = stored ? JSON.parse(stored) : [];
+
+                const newCase = {
+                    id: 'c' + Date.now(),
+                    caseNum: '#' + new Date().getFullYear() + '-' + String(cases.length + 1).padStart(3, '0'),
+                    title: 'SafeSphere Analysis',
+                    threats: analysisResult.threats.map(t => t.label),
+                    fullThreats: analysisResult.threats,
+                    severity: analysisResult.severity.level,
+                    reason: analysisResult.severity.reason,
+                    powerDynamics: analysisResult.powerDynamics,
+                    escalationAnalysis: analysisResult.escalation,
+                    whyMatters: analysisResult.whyMatters,
+                    culturalContext: analysisResult.culturalContext,
+                    actionItems: analysisResult.actionItems,
+                    originalText: analysisResult.text,
+                    status: 'active',
+                    platforms: ['Analysis Tool'],
+                    dateOpened: new Date().toISOString().split('T')[0],
+                    dateUpdated: new Date().toISOString().split('T')[0],
+                    relationship: '',
+                    ageCategory: '',
+                    knownSince: '',
+                    location: '',
+                    notes: '',
+                    personName: '',
+                    displayName: '',
+                    alias: '',
+                    unknownPerson: false,
+                    timeline: [
+                        { id: 'e' + Date.now(), date: timelineObj.startDate || new Date().toISOString().split('T')[0], type: 'Initial Contact', summary: timelineObj.firstIncident || 'Initial analysis saved.', risk: 'MODERATE', evidenceCount: 1 }
+                    ],
+                    evidence: [
+                        { id: 'ev' + Date.now(), type: 'User Note', platform: 'SafeSphere', date: new Date().toISOString().split('T')[0], desc: 'Analysis export. Escalation pattern: ' + timelineObj.escalation, verified: 'Unverified' }
+                    ],
+                    consentLog: ['[' + new Date().toISOString().replace('T', ' ').substring(0, 16) + '] Analysis report saved to vault.'],
+                    details: {}
+                };
+                cases.unshift(newCase);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(cases)); // Keep legacy backup just in case
+
+                // POST to new PostgreSQL backend API
+                fetch('/api/cases', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newCase)
+                }).catch(err => console.error("Failed to save to database", err));
+
+                // showToast happens inside the promise, but since we removed PDF generation, we just show toast now.
+                showToast('Analysis report saved to Evidence Vault.');
+                setTimeout(() => {
+                    document.getElementById('timelineModal').classList.add('hidden');
+                }, 1500);
+            }
+
+            // Cleanup modal
+            document.getElementById('timelineModal').classList.add('hidden');
+            tlConsentCheck.checked = false;
+            tlProceedBtn.disabled = true;
+            document.getElementById('tlStartDate').value = '';
+            document.getElementById('tlFirstIncident').value = '';
+            document.getElementById('tlEscalation').value = '';
+        });
+
+        // ============================================================
+        // ACCORDIONS (Feature 5 & 6)
+        // ============================================================
+
+        document.querySelectorAll('.accordion-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const content = document.getElementById(targetId);
+                const chevron = btn.querySelector('.accordion-chevron');
+                const isOpen = content.classList.contains('open');
+
+                content.classList.toggle('open', !isOpen);
+                chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+            });
+        });
+
+    </script>
+</body>
+
+</html>
